@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<map version="1.0" tiledversion="1.1.5" orientation="orthogonal" renderorder="right-down" width="12" height="8" tilewidth="60" tileheight="60" infinite="0" nextobjectid="1">
+ <tileset firstgid="1" source="back.tsx"/>
+ <layer name="backGroundLayer" width="12" height="8">
+  <data encoding="csv">
+52,52,52,52,52,52,52,52,52,52,52,52,
+52,52,52,52,52,52,52,52,52,52,52,52,
+52,52,52,52,52,52,52,52,52,52,52,52,
+52,52,52,52,52,52,52,52,52,52,52,52,
+52,52,52,52,52,52,52,52,52,52,52,52,
+52,52,52,52,52,52,52,52,52,52,52,52,
+52,52,52,52,52,52,52,52,52,52,52,52,
+52,52,52,52,52,52,52,52,52,52,52,52
+</data>
+ </layer>
+</map>

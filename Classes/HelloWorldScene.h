@@ -38,10 +38,6 @@ private:
 	bool isAttack = false;
 	//判断是否在死亡
 	bool isDead = false;
-	//产生一个怪物，并且移动
-	void createMonster(float time);
-	//被怪物打击
-	void hitByMonster(float time);
 	//停止所有动作
 	void stop(float time);
 

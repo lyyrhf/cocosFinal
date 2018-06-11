@@ -1,4 +1,5 @@
 #include"Monster.h"
+#include"MapController.h"
 USING_NS_CC;
 
 Playground* Playground::playground = NULL;

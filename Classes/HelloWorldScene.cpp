@@ -1,6 +1,6 @@
 #include "HelloWorldScene.h"
 #include "SimpleAudioEngine.h"
-#include "Monster.h"
+#include "MapController.h"
 
 //宏定义用于本地数据持久化
 #define database UserDefault::getInstance()
@@ -147,17 +147,6 @@ bool HelloWorld::init()
 	schedule(schedule_selector(HelloWorld::updateMove), 0.04f);
 	//每一秒时间减少一
 	schedule(schedule_selector(HelloWorld::update), 1.0f);
-	//每两秒生成一个怪物，并且移动
-	//schedule(schedule_selector(HelloWorld::createMonster), 2.0f);
-	//每0.1秒检测有没有被怪物攻击
-	//schedule(schedule_selector(HelloWorld::hitByMonster), 0.1f);
-	//每0.1秒检测主角有没有死
-	//为什么要这么做，其实也是无奈的办法
-	//因为如果死亡就要播放死亡动画，死亡动画结束后，取消所有动作，
-	// 将死亡动画和取消所有动作放在一个函数中的时候，因为死亡动画是要时间的，函数会
-	//直接执行，所以取消所有动作覆盖了死亡动画，导致没有播放，有人可能会依靠isDead来实现
-	//先死亡再停止，但是本质没有改变，用一个序列来实现，序列结束的时候改变isDead的值，再用这个值
-	//决定是否停止动画，同样，停止所有动画不会等isDead的值改变再执行。所有直接用调度器了。
 	schedule(schedule_selector(HelloWorld::stop), 0.1f);
     return true;
 }
@@ -193,7 +182,7 @@ void HelloWorld::attackA() {
 		isAttack = false;
 	})), nullptr);
 	player->runAction(sequence);
-	setColor(skill1(tileCoordForPosition(player->getPosition())),Color3B(255,255,255));
+	setColor(skill1(tileCoordForPosition(player->getPosition())),Color3B(139,0,0));
 }
 /*
 死亡动作的实现
@@ -211,8 +200,6 @@ void HelloWorld::deadCallback(Ref * pSender)
 			isDead = true;
 		})), nullptr);
 		player->runAction(sequence);
-		unschedule(schedule_selector(HelloWorld::createMonster));
-		unschedule(schedule_selector(HelloWorld::hitByMonster));
 		unschedule(schedule_selector(HelloWorld::update));
 	}
 }
@@ -247,63 +234,6 @@ void HelloWorld::updateMove(float dt) {
 	}
 }
 
-//参考PPT
-void HelloWorld::createMonster(float dt) 
-{
-	auto fac = Factory::getInstance();
-	auto m = fac->createMonster();
-	float x = random(origin.x, visibleSize.width);
-	float y = random(origin.y, visibleSize.height);
-	m->setPosition(x, y);
-	addChild(m, 3);
-	fac->moveMonster(player->getPosition(), 0.5f);
-}
-
-//参考PPT
-void HelloWorld::hitByMonster(float dt) 
-{
-	auto fac = Factory::getInstance();
-	Rect playerRect = player->getBoundingBox();
-	Rect attackRect = Rect(playerRect.getMinX() - 40, playerRect.getMinY(), playerRect.getMaxX() - playerRect.getMinX() + 80, playerRect.getMaxY() - playerRect.getMinY());
-	Sprite *attackCollision = fac->collider(attackRect);
-	//这边注意判断的时候，是嵌套关系，不是并列关系
-	//就是说不能将attackCollison和playerCollision放在并列关系判断，否则会出错
-	if (attackCollision != NULL) {
-		if (isAttack) {
-			fac->removeMonster(attackCollision);
-			float percentage = pT->getPercentage();
-			if (percentage < 100) {
-				auto to = ProgressFromTo::create(1.0f, percentage, percentage + 20);
-				pT->runAction(to);
-			}
-			string str = score->getString();
-			int scoreLength = atoi(str.c_str());
-			scoreLength++;
-			CCString* ns = CCString::createWithFormat("%d", scoreLength);
-			string s = ns->_string;
-			score->setString(s);
-			//放在本地文件UserDefault.xml中
-			database->setIntegerForKey("score",scoreLength);
-			//这里又要吐槽一下网上的解答，说UserDefault.xml文件在Debug文件夹里面之类的
-			//直接用下面的输出语句就可以看到地址，实现本地数据持久化
-			CCLOG("%s", FileUtils::getInstance()->getWritablePath().c_str());
-		}
-		else {
-			Sprite *playerCollision = fac->collider(playerRect);
-			if (playerCollision != NULL) {
-				fac->removeMonster(playerCollision);
-				float percentage = pT->getPercentage();
-				if (percentage > 0) {
-					auto to = ProgressFromTo::create(1.0f, percentage, percentage - 20);
-					pT->runAction(to);
-				}
-				else {
-					deadCallback(NULL);
-				}
-			}
-		}
-	}
-}
 
 //停止所有动作
 void HelloWorld::stop(float dt) 
@@ -415,22 +345,22 @@ Vec2 HelloWorld::positionForTileCoord(const Vec2& tileCoord)
 std::vector<Vec2> HelloWorld::skill1(Vec2 input)
 {
 	std::vector<Vec2> skillArea;
-	/*Vec2 wDirection1 = Vec2(input.y - 1, input.x);
-	Vec2 wDirection2 = Vec2(input.y - 2, input.x);
-	Vec2 sDirection1 = Vec2(input.y + 1, input.x);
-	Vec2 sDirection2 = Vec2(input.y + 2, input.x);
-	Vec2 aDirection1 = Vec2(input.y, input.x - 1);
-	Vec2 aDirection2 = Vec2(input.y, input.x - 2);
-	Vec2 dDirection1 = Vec2(input.y, input.x + 1);
-	Vec2 dDirection2 = Vec2(input.y, input.x + 2);
+	Vec2 wDirection1 = Vec2(input.x, input.y - 1);
+	Vec2 wDirection2 = Vec2(input.x, input.y - 2);
+	Vec2 sDirection1 = Vec2(input.x, input.y + 1);
+	Vec2 sDirection2 = Vec2(input.x, input.y + 2);
+	Vec2 aDirection1 = Vec2(input.x - 1, input.y);
+	Vec2 aDirection2 = Vec2(input.x - 2, input.y);
+	Vec2 dDirection1 = Vec2(input.x + 1, input.y);
+	Vec2 dDirection2 = Vec2(input.x + 2, input.y);
 	skillArea.push_back(wDirection1);
-	skillArea.push_back(wDirection1);
-	skillArea.push_back(wDirection1);
-	skillArea.push_back(wDirection1);
-	skillArea.push_back(wDirection1);
-	skillArea.push_back(wDirection1);
-	skillArea.push_back(wDirection1);
-	skillArea.push_back(wDirection1);*/
+	skillArea.push_back(wDirection2);
+	skillArea.push_back(sDirection1);
+	skillArea.push_back(sDirection2);
+	skillArea.push_back(aDirection1);
+	skillArea.push_back(aDirection2);
+	skillArea.push_back(dDirection1);
+	skillArea.push_back(dDirection2);
 	skillArea.push_back(input);
 	return skillArea;
 }
@@ -440,8 +370,17 @@ void HelloWorld::setColor(std::vector<Vec2> inputArea, Color3B inputColor)
 	if (inputArea.size() <= 0) {
 		return;
 	}
-	CCLOG("tile1x = %f,tile1y = %f",inputArea.at(0).x,inputArea.at(0).y);
-	auto tile1 = backGroundLayer->getTileAt(Point(inputArea.at(0).x,inputArea.at(0).y));
-	JumpBy *jump = JumpBy::create(1.0f, Vec2(50, 1), 100, 1);
-	tile1->runAction(jump);
+	CCLOG("tile1x = %f,tile1y = %f",inputArea[0].x,inputArea[0].y);
+	//CCLOG("tile1x = %f,tile1y = %f", inputArea.at(1).x, inputArea.at(1).y);
+	CCLOG("inputAreaSize = %d",inputArea.size());
+	for (int i = 0; i < inputArea.size(); i++) {
+		CCLOG("%d,%d", inputArea.at(i).x, inputArea.at(i).y);
+		if (inputArea[i].x < 0 || inputArea[i].x > mapSize.width || inputArea[i].y < 0 || inputArea[i].y > mapSize.height) {
+			continue;
+		}
+		auto tile1 = backGroundLayer->getTileAt(Point(inputArea.at(i).x, inputArea.at(i).y));
+		tile1->setColor(inputColor);
+	}
+	//auto tile1 = backGroundLayer->getTileAt(Point(inputArea.at(0).x,inputArea.at(0).y));
+	//tile1->setColor(inputColor);
 }

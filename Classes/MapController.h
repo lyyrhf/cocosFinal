@@ -21,6 +21,9 @@ public:
 	}
 	void setColor(std::vector<Vec2> inputPosition, Color3B inputColor) {//这个函数按次序改变队列中格子的颜色
 		setColor(inputPosition.at(0), inputColor);
+		for (int i = 0; i < inputPosition.size(); i++) {
+			setColor(inputPosition.at(i), inputColor);
+		}
 	}
 
 	// OpenGL坐标转成格子坐标
@@ -29,9 +32,9 @@ public:
 		//CCLOG("ContentSize == %f", tmx->getContentSize().width);
 		//CCLOG("ContentSize == %f", tmx->getContentSize().height);
 		//CCLOG("%f", tileSize.width);
-		int x = (position.x) / tileSize.width * 12 / 11;
+		int x = (position.x) / tileSize.width * 12 / 11 - 4 ;
 		CCLOG("position.x = %f,tileSize.width = %f", position.x, tileSize.width);
-		int y = (mapSize.height*tileSize.width - position.y) /tileSize.width * 8 / 7;
+		int y = (mapSize.height*tileSize.width - position.y) /tileSize.width * 8 / 7 + 2;
 		return Vec2(x, y);
 	}
 	Vec2 positionForTileCoord(const Vec2& tileCoord)

@@ -12,7 +12,8 @@ public:
     // implement the "static create()" method manually
     CREATE_FUNC(HelloWorld);
 private:
-	cocos2d::Sprite* player;
+	cocos2d::Sprite* player1;
+	cocos2d::Sprite* player2;
 	cocos2d::Vector<SpriteFrame*> attack;
 	cocos2d::Vector<SpriteFrame*> dead;
 	cocos2d::Vector<SpriteFrame*> run;
@@ -46,14 +47,22 @@ private:
 	void addKeyboardListener();
 	void onKeyPressed(EventKeyboard::KeyCode code, Event* event);
 	void onKeyReleased(EventKeyboard::KeyCode code, Event* event);
-	bool isMove;
-	char movekey;
-	void movePlayer(char c);
+	bool isMove1;
+	bool isMove2;
+	char movekey1;
+	char movekey2;
+	void movePlayer1(char c);
+	void movePlayer2(char c);
 	void updateMove(float time);
-	void attackA();
+	void attack1();
+	void attack2();
+
+	int attackWay1;//1是第一个技能，2是第二个技能，3是第三个技能
+	int attackWay2;
 
 	std::vector<Vec2> skill1(Vec2 temp);
-
+	std::vector<Vec2> skill2(Vec2 temp);
+	std::vector<Vec2> skill3(Vec2 temp);
 	Playground * theMap;
 
 };

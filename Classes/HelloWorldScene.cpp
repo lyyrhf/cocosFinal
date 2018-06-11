@@ -54,10 +54,17 @@ bool HelloWorld::init()
 	//从贴图中以像素单位切割，创建关键帧
 	auto frame0 = SpriteFrame::createWithTexture(texture, CC_RECT_PIXELS_TO_POINTS(Rect(0, 0, 113, 113)));
 	//使用第一帧创建精灵
-	player = Sprite::createWithSpriteFrame(frame0);
-	player->setPosition(Vec2(origin.x + visibleSize.width / 2,
+	player1 = Sprite::createWithSpriteFrame(frame0);
+	player1->setPosition(Vec2(origin.x + visibleSize.width / 2,
 		origin.y + visibleSize.height / 2));
-	addChild(player, 3);
+	addChild(player1, 3);
+	player1->setAnchorPoint(Point(0.5,0.5));
+
+	player2 = Sprite::createWithSpriteFrame(frame0);
+	player2->setPosition(Vec2(origin.x + visibleSize.width / 2 + 200,
+		origin.y + visibleSize.height / 2 + 50));
+	addChild(player2, 3);
+	player2->setAnchorPoint(Point(0.5, 0.5));
 
 	//hp条
 	Sprite* sp0 = Sprite::create("hp.png", CC_RECT_PIXELS_TO_POINTS(Rect(0, 320, 420, 47)));
@@ -138,13 +145,6 @@ bool HelloWorld::init()
     return true;
 }
 
-/*
-实现攻击动作，攻击工作结束将isAnimating置为false
-加分项是实现血条的变化
-*/
-/*
-这次作业将血条和攻击分离了
-*/
 void HelloWorld::attackCallback(Ref * pSender)
 {
 	if (isDead == true) {
@@ -158,26 +158,54 @@ void HelloWorld::attackCallback(Ref * pSender)
 			isAnimating = false;
 			isAttack = false;
 		})), nullptr);
-		player->runAction(sequence);
+		player1->runAction(sequence);
 	}
 }
 
-void HelloWorld::attackA() {
+void HelloWorld::attack1() {
 	theMap = Playground::getInstance();
 	auto sequence = Sequence::create(Animate::create(AnimationCache::getInstance()->getAnimation("attack")),
 		CCCallFunc::create(([this]() {
 		isAnimating = false;
 		isAttack = false;
 	})), nullptr);
-	player->runAction(sequence);
-	theMap->setColor(skill1(theMap->tileCoordForPosition(player->getPosition())),Color3B(139,0,0));
+	player1->runAction(sequence);
+	attackWay1 = 1;
+	//theMap->setColor(skill1(theMap->tileCoordForPosition(player->getPosition())),Color3B(139,0,0));
+	if (attackWay1 == 1) {
+		theMap->setColor(skill1(theMap->tileCoordForPosition(player1->getPosition())), Color3B(139, 0, 0));
+	}
+	else if (attackWay1 == 2) {
+		theMap->setColor(skill2(theMap->tileCoordForPosition(player1->getPosition())), Color3B(139, 0, 0));
+	}
+	else if (attackWay1 == 3) {
+		theMap->setColor(skill3(theMap->tileCoordForPosition(player1->getPosition())), Color3B(139, 0, 0));
+	}
 }
-/*
-死亡动作的实现
-*/
-/*
-死亡之后，处理调度器
-*/
+
+void HelloWorld::attack2() {
+	theMap = Playground::getInstance();
+	auto sequence = Sequence::create(Animate::create(AnimationCache::getInstance()->getAnimation("attack")),
+		CCCallFunc::create(([this]() {
+		isAnimating = false;
+		isAttack = false;
+	})), nullptr);
+	player2->runAction(sequence);
+	attackWay2 = 2;
+	//theMap->setColor(skill1(theMap->tileCoordForPosition(player->getPosition())),Color3B(139,0,0));
+	if (attackWay2 == 1) {
+		theMap->setColor(skill1(theMap->tileCoordForPosition(player2->getPosition())), Color3B(139, 0, 0));
+	}
+	else if (attackWay2 == 2) {
+		theMap->setColor(skill2(theMap->tileCoordForPosition(player2->getPosition())), Color3B(139, 0, 0));
+	}
+	else if (attackWay2 == 3) {
+		theMap->setColor(skill3(theMap->tileCoordForPosition(player2->getPosition())), Color3B(139, 0, 0));
+	}
+}
+
+
+
 void HelloWorld::deadCallback(Ref * pSender)
 {
 	if (isDead == false) {
@@ -187,7 +215,7 @@ void HelloWorld::deadCallback(Ref * pSender)
 			isAnimating = false;
 			isDead = true;
 		})), nullptr);
-		player->runAction(sequence);
+		player1->runAction(sequence);
 		unschedule(schedule_selector(HelloWorld::update));
 	}
 }
@@ -217,8 +245,11 @@ void HelloWorld::update(float dt)
 	}
 }
 void HelloWorld::updateMove(float dt) {
-	if (isMove) {
-		movePlayer(movekey);
+	if (isMove1) {
+		movePlayer1(movekey1);
+	}
+	if (isMove2) {
+		movePlayer2(movekey2);
 	}
 }
 
@@ -227,7 +258,7 @@ void HelloWorld::updateMove(float dt) {
 void HelloWorld::stop(float dt) 
 {
 	if (isDead == true) {
-		player->stopAllActions();
+		player1->stopAllActions();
 	}
 }
 
@@ -236,26 +267,45 @@ void HelloWorld::onKeyPressed(EventKeyboard::KeyCode code, Event* event) {
 	switch (code) {
 	case EventKeyboard::KeyCode::KEY_CAPITAL_A:
 	case EventKeyboard::KeyCode::KEY_A:
-		movekey = 'A';
-		isMove = true;
+		movekey1 = 'A';
+		isMove1 = true;
 		break;
 	case EventKeyboard::KeyCode::KEY_CAPITAL_D:
 	case EventKeyboard::KeyCode::KEY_D:
-		movekey = 'D';
-		isMove = true;
+		movekey1 = 'D';
+		isMove1 = true;
 		break;
 	case EventKeyboard::KeyCode::KEY_CAPITAL_S:
 	case EventKeyboard::KeyCode::KEY_S:
-		movekey = 'S';
-		isMove = true;
+		movekey1 = 'S';
+		isMove1 = true;
 		break;
 	case EventKeyboard::KeyCode::KEY_CAPITAL_W:
 	case EventKeyboard::KeyCode::KEY_W:
-		movekey = 'W';
-		isMove = true;
+		movekey1 = 'W';
+		isMove1 = true;
+		break;
+	case EventKeyboard::KeyCode::KEY_LEFT_ARROW:
+		movekey2 = 'A';
+		isMove2 = true;
+		break;
+	case EventKeyboard::KeyCode::KEY_RIGHT_ARROW:
+		movekey2 = 'D';
+		isMove2 = true;
+		break;
+	case EventKeyboard::KeyCode::KEY_DOWN_ARROW:
+		movekey2 = 'S';
+		isMove2 = true;
+		break;
+	case EventKeyboard::KeyCode::KEY_UP_ARROW:
+		movekey2 = 'W';
+		isMove2 = true;
 		break;
 	case EventKeyboard::KeyCode::KEY_SPACE:
-		attackA();
+		attack1();
+		break;
+	case EventKeyboard::KeyCode::KEY_ENTER:
+		attack2();
 		break;
 	}
 }
@@ -270,7 +320,14 @@ void HelloWorld::onKeyReleased(EventKeyboard::KeyCode code, Event* event) {
 	case EventKeyboard::KeyCode::KEY_CAPITAL_S:
 	case EventKeyboard::KeyCode::KEY_W:
 	case EventKeyboard::KeyCode::KEY_CAPITAL_W:
-		isMove = false;
+		isMove1 = false;
+		break;
+
+	case EventKeyboard::KeyCode::KEY_LEFT_ARROW:
+	case EventKeyboard::KeyCode::KEY_RIGHT_ARROW:
+	case EventKeyboard::KeyCode::KEY_UP_ARROW:
+	case EventKeyboard::KeyCode::KEY_DOWN_ARROW:
+		isMove2 = false;
 		break;
 	}
 }
@@ -280,38 +337,65 @@ void HelloWorld::addKeyboardListener() {
 	auto keyBoardListener = EventListenerKeyboard::create();
 	keyBoardListener->onKeyPressed = CC_CALLBACK_2(HelloWorld::onKeyPressed, this);
 	keyBoardListener->onKeyReleased = CC_CALLBACK_2(HelloWorld::onKeyReleased, this);
-	_eventDispatcher->addEventListenerWithSceneGraphPriority(keyBoardListener, player);
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(keyBoardListener, player1);
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(keyBoardListener->clone(), player2);
 }
 
-void HelloWorld::movePlayer(char c) {
+void HelloWorld::movePlayer1(char c) {
 	theMap = Playground::getInstance();
-	CCLOG("Player == %f,%f", player->getPosition().x, player->getPosition().y);
-	CCLOG("OpenGL == %f,%f", theMap->tileCoordForPosition(player->getPosition()).x, theMap->tileCoordForPosition(player->getPosition()).y);
+	CCLOG("Player == %f,%f", player1->getPosition().x, player1->getPosition().y);
+	CCLOG("OpenGL == %f,%f", theMap->tileCoordForPosition(player1->getPosition()).x , theMap->tileCoordForPosition(player1->getPosition()).y + 2);
 	if (c == 'A') {
-		player->setFlippedX(true);
-		if (player->getPosition().x > 0) {
-			player->runAction(MoveBy::create(0.1f, Vec2(-10, 0)));
+		player1->setFlippedX(true);
+		if (player1->getPosition().x > 0) {
+			player1->runAction(MoveBy::create(0.1f, Vec2(-10, 0)));
 		}
 	}
 	else if (c == 'D') {
-		player->setFlippedX(false);
-		if (player->getPosition().x < visibleSize.width) {
-			player->runAction(MoveBy::create(0.1f, Vec2(10, 0)));
+		player1->setFlippedX(false);
+		if (player1->getPosition().x < visibleSize.width) {
+			player1->runAction(MoveBy::create(0.1f, Vec2(10, 0)));
 		}
 	}
 	else if (c == 'W') {
-		if (player->getPosition().y < visibleSize.height) {
-			player->runAction(MoveBy::create(0.1f, Vec2(0, 10)));
+		if (player1->getPosition().y < visibleSize.height) {
+			player1->runAction(MoveBy::create(0.1f, Vec2(0, 10)));
 		}
 	}
 	else if (c == 'S') {
-		if (player->getPosition().y > 0) {
-			player->runAction(MoveBy::create(0.1f, Vec2(0, -10)));
+		if (player1->getPosition().y > 0) {
+			player1->runAction(MoveBy::create(0.1f, Vec2(0, -10)));
 		}
 	}
 }
 
-
+void HelloWorld::movePlayer2(char c) {
+	theMap = Playground::getInstance();
+	CCLOG("Player == %f,%f", player1->getPosition().x, player1->getPosition().y);
+	CCLOG("OpenGL == %f,%f", theMap->tileCoordForPosition(player1->getPosition()).x, theMap->tileCoordForPosition(player1->getPosition()).y + 2);
+	if (c == 'A') {
+		player2->setFlippedX(true);
+		if (player2->getPosition().x > 0) {
+			player2->runAction(MoveBy::create(0.1f, Vec2(-10, 0)));
+		}
+	}
+	else if (c == 'D') {
+		player2->setFlippedX(false);
+		if (player2->getPosition().x < visibleSize.width) {
+			player2->runAction(MoveBy::create(0.1f, Vec2(10, 0)));
+		}
+	}
+	else if (c == 'W') {
+		if (player2->getPosition().y < visibleSize.height) {
+			player2->runAction(MoveBy::create(0.1f, Vec2(0, 10)));
+		}
+	}
+	else if (c == 'S') {
+		if (player2->getPosition().y > 0) {
+			player2->runAction(MoveBy::create(0.1f, Vec2(0, -10)));
+		}
+	}
+}
 
 std::vector<Vec2> HelloWorld::skill1(Vec2 input)
 {
@@ -336,3 +420,40 @@ std::vector<Vec2> HelloWorld::skill1(Vec2 input)
 	return skillArea;
 }
 
+std::vector<Vec2> HelloWorld::skill2(Vec2 input) 
+{
+	std::vector<Vec2> skillArea;
+	Vec2 nDirection = Vec2(input.x, input.y - 1);
+	Vec2 wnDirection = Vec2(input.x-1, input.y - 1);
+	Vec2 enDirection = Vec2(input.x+1, input.y - 1);
+	Vec2 eDirection = Vec2(input.x+1, input.y);
+	Vec2 esDirection = Vec2(input.x+1, input.y + 1);
+	Vec2 wDirection = Vec2(input.x-1, input.y);
+	Vec2 wsDirection = Vec2(input.x-1, input.y + 1);
+	Vec2 sDirection = Vec2(input.x, input.y + 1);
+	skillArea.push_back(nDirection);
+	skillArea.push_back(wnDirection);
+	skillArea.push_back(enDirection);
+	skillArea.push_back(eDirection);
+	skillArea.push_back(esDirection);
+	skillArea.push_back(wDirection);
+	skillArea.push_back(wsDirection);
+	skillArea.push_back(sDirection);
+	skillArea.push_back(input);
+	return skillArea;
+}
+
+std::vector<Vec2> HelloWorld::skill3(Vec2 input)
+{
+	std::vector<Vec2> skillArea;
+	Vec2 eDirection1 = Vec2(input.x + 1, input.y);
+	Vec2 eDirection2 = Vec2(input.x + 2, input.y);
+	Vec2 eDirection3 = Vec2(input.x + 3, input.y);
+	Vec2 eDirection4 = Vec2(input.x + 4, input.y);
+	skillArea.push_back(eDirection1);
+	skillArea.push_back(eDirection2);
+	skillArea.push_back(eDirection3);
+	skillArea.push_back(eDirection4);
+	skillArea.push_back(input);
+	return skillArea;
+}

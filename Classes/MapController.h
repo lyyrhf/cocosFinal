@@ -15,22 +15,23 @@ public:
 
 
 	void setColor(Vec2 inputPosition, Color3B inputColor) {//这个函数改变指定位置格子的颜色
-		CCLOG("%f  ######%f", inputPosition.x, -inputPosition.y);
-		auto tile1 = backGroundLayer->getTileAt(Point(inputPosition.x, -inputPosition.y));//获取指定格子
+		CCLOG("%f  ######%f", inputPosition.x, inputPosition.y);
+		auto tile1 = backGroundLayer->getTileAt(Point(inputPosition.x, inputPosition.y));//获取指定格子
 		tile1->setColor(inputColor);//改变颜色
 	}
 	void setColor(std::vector<Vec2> inputPosition, Color3B inputColor) {//这个函数按次序改变队列中格子的颜色
-
+		setColor(inputPosition.at(0), inputColor);
 	}
+
 	// OpenGL坐标转成格子坐标
 	Vec2 tileCoordForPosition(const Vec2& position)
 	{
 		//CCLOG("ContentSize == %f", tmx->getContentSize().width);
 		//CCLOG("ContentSize == %f", tmx->getContentSize().height);
-
+		//CCLOG("%f", tileSize.width);
 		int x = (position.x) / tileSize.width * 12 / 11;
 		CCLOG("position.x = %f,tileSize.width = %f", position.x, tileSize.width);
-		int y = (mapSize.height*tileSize.width - position.y) / tileSize.width * 8 / 7;
+		int y = (mapSize.height*tileSize.width - position.y) /tileSize.width * 8 / 7;
 		return Vec2(x, y);
 	}
 	Vec2 positionForTileCoord(const Vec2& tileCoord)
@@ -39,14 +40,14 @@ public:
 		int y = (mapSize.height - tileCoord.y)*tileSize.height - tileSize.height / 2;
 		return Vec2(x, y);
 	}
-
+	Size tileSize;
+	Size mapSize;
 	TMXTiledMap* tmx;//地图文件
 private:
 	Playground();
 	TMXLayer* backGroundLayer;
 
 	static Playground* playground;
-	Size tileSize;
-	Size mapSize;
+
 	TMXObjectGroup* objects;//地图对象
 };

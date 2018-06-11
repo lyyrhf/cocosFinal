@@ -1,4 +1,5 @@
 #include "cocos2d.h"
+#include"MapController.h"
 using namespace cocos2d;
 
 class HelloWorld : public cocos2d::Scene
@@ -50,12 +51,9 @@ private:
 	void movePlayer(char c);
 	void updateMove(float time);
 	void attackA();
-	Vec2 tileCoordForPosition(const Vec2& position);
-	Vec2 positionForTileCoord(const Vec2& tileCoord);
-	cocos2d::TMXTiledMap* tmx;
-	Size mapSize;
-	Size tileSize;
+
 	std::vector<Vec2> skill1(Vec2 temp);
-	void setColor(std::vector<Vec2> inputArea,Color3B inputColor);
-	cocos2d::TMXLayer* backGroundLayer;
+
+	Playground * theMap;
+
 };

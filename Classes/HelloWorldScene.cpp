@@ -36,31 +36,18 @@ bool HelloWorld::init()
     visibleSize = Director::getInstance()->getVisibleSize();
     origin = Director::getInstance()->getVisibleOrigin();
 
-	//这里需要特别注意
-	/***********************************************************************/
-	/*这里差不多花了三个小时的时间
-	主要解决，图片没有显示的问题，上网查了很多资料，没有一个有用的。
-	有的说png图片不能用，有的说bmp图片不能用，我暂时用的jpg图片。
-	据说新建层没有添加物体会奔溃，发现并没有，不知道网上的问题是怎么回事，全部都是错误答案。
-	也可能是版本的问题，毕竟那个时候还是CC前缀还在的时候
-	至于除去以上问题，画面还是没法显示，怎么解决？
-	经过尝试，这种方法是可以的：
-	一开始将所有要用到的资源放在Resources，不能直接把生成好的map.tmx放在Resources，
-	否则没有显示，但是tmx ！= NULL。也不能将生成好的map.tmx先放在Resources下，再把用到
-	的资源放在Resources，亲测不行。只能先把要用到的资源放在Resources下，我用到的资源是
-	Test.jpg，然后打开TileMap，新建地图，保存地址也要保存到Resources，最好不要保存到其他位置，然后
-	再拷贝到Resources，接下来导入图块，一定要用Resources下的图片，这样生成的图片才可以在Cocos中显示。*/
-	/***********************************************************************/
-	tmx = TMXTiledMap::create("test2.tmx");
+
+	auto theMap =Playground::getInstance();
+	/*tmx = TMXTiledMap::create("test2.tmx");
 	tmx->setPosition(visibleSize.width / 2, visibleSize.height / 2);
 	CCLOG("%f,%f", visibleSize.width / 2, visibleSize.height / 2);
 	tmx->setAnchorPoint(Vec2(0.5, 0.5));
 	tmx->setScale(Director::getInstance()->getContentScaleFactor());
-	addChild(tmx, 0);
+
 	mapSize = tmx->getMapSize();
 	tileSize = tmx->getTileSize();
-	backGroundLayer = tmx->getLayer("backGroundLayer");
-
+	backGroundLayer = tmx->getLayer("backGroundLayer");*/
+	addChild(theMap->tmx, 0);
 
 	//创建一张贴图
 	auto texture = Director::getInstance()->getTextureCache()->addImage("$lucia_2.png");
@@ -176,13 +163,14 @@ void HelloWorld::attackCallback(Ref * pSender)
 }
 
 void HelloWorld::attackA() {
+	theMap = Playground::getInstance();
 	auto sequence = Sequence::create(Animate::create(AnimationCache::getInstance()->getAnimation("attack")),
 		CCCallFunc::create(([this]() {
 		isAnimating = false;
 		isAttack = false;
 	})), nullptr);
 	player->runAction(sequence);
-	setColor(skill1(tileCoordForPosition(player->getPosition())),Color3B(139,0,0));
+	theMap->setColor(skill1(theMap->tileCoordForPosition(player->getPosition())),Color3B(139,0,0));
 }
 /*
 死亡动作的实现
@@ -296,9 +284,9 @@ void HelloWorld::addKeyboardListener() {
 }
 
 void HelloWorld::movePlayer(char c) {
-	
+	theMap = Playground::getInstance();
 	CCLOG("Player == %f,%f", player->getPosition().x, player->getPosition().y);
-	CCLOG("OpenGL == %f,%f", tileCoordForPosition(player->getPosition()).x, tileCoordForPosition(player->getPosition()).y);
+	CCLOG("OpenGL == %f,%f", theMap->tileCoordForPosition(player->getPosition()).x, theMap->tileCoordForPosition(player->getPosition()).y);
 	if (c == 'A') {
 		player->setFlippedX(true);
 		if (player->getPosition().x > 0) {
@@ -323,24 +311,7 @@ void HelloWorld::movePlayer(char c) {
 	}
 }
 
-// OpenGL坐标转成格子坐标
-Vec2 HelloWorld::tileCoordForPosition(const Vec2& position)
-{
-	CCLOG("ContentSize == %f",tmx->getContentSize().width);
-	CCLOG("ContentSize == %f", tmx->getContentSize().height);
 
-	int x = (position.x) / tileSize.width * 12/11;
-	CCLOG("position.x = %f,tileSize.width = %f",position.x,tileSize.width);
-	int y = (mapSize.height*tileSize.width - position.y) / tileSize.width * 8/7;
-	return Vec2(x, y);
-}
-// tile坐标转成瓦片格子中心的OpenGL坐标
-Vec2 HelloWorld::positionForTileCoord(const Vec2& tileCoord)
-{
-	int x = tileCoord.x * tileSize.width + tileSize.width / 2;
-	int y = (mapSize.height - tileCoord.y)*tileSize.height - tileSize.height / 2;
-	return Vec2(x, y);
-}
 
 std::vector<Vec2> HelloWorld::skill1(Vec2 input)
 {
@@ -365,22 +336,3 @@ std::vector<Vec2> HelloWorld::skill1(Vec2 input)
 	return skillArea;
 }
 
-void HelloWorld::setColor(std::vector<Vec2> inputArea, Color3B inputColor) 
-{
-	if (inputArea.size() <= 0) {
-		return;
-	}
-	CCLOG("tile1x = %f,tile1y = %f",inputArea[0].x,inputArea[0].y);
-	//CCLOG("tile1x = %f,tile1y = %f", inputArea.at(1).x, inputArea.at(1).y);
-	CCLOG("inputAreaSize = %d",inputArea.size());
-	for (int i = 0; i < inputArea.size(); i++) {
-		CCLOG("%d,%d", inputArea.at(i).x, inputArea.at(i).y);
-		if (inputArea[i].x < 0 || inputArea[i].x > mapSize.width || inputArea[i].y < 0 || inputArea[i].y > mapSize.height) {
-			continue;
-		}
-		auto tile1 = backGroundLayer->getTileAt(Point(inputArea.at(i).x, inputArea.at(i).y));
-		tile1->setColor(inputColor);
-	}
-	//auto tile1 = backGroundLayer->getTileAt(Point(inputArea.at(0).x,inputArea.at(0).y));
-	//tile1->setColor(inputColor);
-}

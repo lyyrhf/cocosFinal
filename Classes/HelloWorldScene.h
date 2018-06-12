@@ -74,4 +74,6 @@ private:
 
 	bool isAttack1;
 	bool isAttack2;
+
+
 };

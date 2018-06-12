@@ -25,13 +25,13 @@ public:
 			setColor(inputPosition.at(i), inputColor);
 		}
 	}
-
+	Color3B getColor(Vec2 inputPosition) {//获取一个格子的颜色
+		auto tile1 = backGroundLayer->getTileAt(Point(inputPosition.x, inputPosition.y));//获取指定格子
+		return tile1->getColor();
+	}
 	// OpenGL坐标转成格子坐标
 	Vec2 tileCoordForPosition(const Vec2& position)
 	{
-		//CCLOG("ContentSize == %f", tmx->getContentSize().width);
-		//CCLOG("ContentSize == %f", tmx->getContentSize().height);
-		//CCLOG("%f", tileSize.width);
 		int x = (position.x) / tileSize.width * 12 / 11 - 4 ;
 		CCLOG("position.x = %f,tileSize.width = %f", position.x, tileSize.width);
 		int y = (mapSize.height*tileSize.width - position.y) /tileSize.width * 8 / 7 + 2;
@@ -43,6 +43,7 @@ public:
 		int y = (mapSize.height - tileCoord.y)*tileSize.height - tileSize.height / 2;
 		return Vec2(x, y);
 	}
+
 	Size tileSize;
 	Size mapSize;
 	TMXTiledMap* tmx;//地图文件

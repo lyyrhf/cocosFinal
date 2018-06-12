@@ -43,7 +43,12 @@ public:
 		int y = (mapSize.height - tileCoord.y)*tileSize.height - tileSize.height / 2;
 		return Vec2(x, y);
 	}
-
+	bool isValid(Vec2 position) {//这个函数判断一个格子是否在战斗区域内
+		if (position.x < 0 || position.y < 0 || position.x>11 || position.y>7) {
+			return false;
+		}
+		return true;
+	}
 	Size tileSize;
 	Size mapSize;
 	TMXTiledMap* tmx;//地图文件

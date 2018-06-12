@@ -340,29 +340,33 @@ void HelloWorld::addKeyboardListener() {
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(keyBoardListener, player1);
 	_eventDispatcher->addEventListenerWithSceneGraphPriority(keyBoardListener->clone(), player2);
 }
-
+//0是上，1是下，2是左，3是右
 void HelloWorld::movePlayer1(char c) {
 	theMap = Playground::getInstance();
 	CCLOG("Player == %f,%f", player1->getPosition().x, player1->getPosition().y);
 	CCLOG("OpenGL == %f,%f", theMap->tileCoordForPosition(player1->getPosition()).x , theMap->tileCoordForPosition(player1->getPosition()).y + 2);
 	if (c == 'A') {
+		player1Direction = 2;
 		player1->setFlippedX(true);
 		if (player1->getPosition().x > 0) {
 			player1->runAction(MoveBy::create(0.1f, Vec2(-10, 0)));
 		}
 	}
 	else if (c == 'D') {
+		player1Direction = 3;
 		player1->setFlippedX(false);
 		if (player1->getPosition().x < visibleSize.width) {
 			player1->runAction(MoveBy::create(0.1f, Vec2(10, 0)));
 		}
 	}
 	else if (c == 'W') {
+		player1Direction = 0;
 		if (player1->getPosition().y < visibleSize.height) {
 			player1->runAction(MoveBy::create(0.1f, Vec2(0, 10)));
 		}
 	}
 	else if (c == 'S') {
+		player1Direction = 1;
 		if (player1->getPosition().y > 0) {
 			player1->runAction(MoveBy::create(0.1f, Vec2(0, -10)));
 		}
@@ -446,6 +450,7 @@ std::vector<Vec2> HelloWorld::skill2(Vec2 input)
 std::vector<Vec2> HelloWorld::skill3(Vec2 input)
 {
 	std::vector<Vec2> skillArea;
+
 	Vec2 eDirection1 = Vec2(input.x + 1, input.y);
 	Vec2 eDirection2 = Vec2(input.x + 2, input.y);
 	Vec2 eDirection3 = Vec2(input.x + 3, input.y);

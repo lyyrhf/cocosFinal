@@ -65,4 +65,6 @@ private:
 	std::vector<Vec2> skill3(Vec2 temp);
 	Playground * theMap;
 
+	int player1Direction;//0是上，1是下，2是左，3是右
+	int player2Direction;
 };

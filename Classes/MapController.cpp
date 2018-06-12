@@ -14,7 +14,7 @@ Playground* Playground::getInstance() {
 }
 void Playground::initMap() {//初始化tmx，使得tmx可以被主函数加入layer
 	cocos2d::Size visibleSize = Director::getInstance()->getVisibleSize();
-	tmx = TMXTiledMap::create("map.tmx");//创建地图
+	tmx = TMXTiledMap::create("finalMap.tmx");//创建地图
 	CCLOG("inited");
 	tmx->setPosition(visibleSize.width / 2, visibleSize.height / 2);
 	tmx->setAnchorPoint(Vec2(0.5, 0.5));

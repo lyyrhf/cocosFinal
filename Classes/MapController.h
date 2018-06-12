@@ -55,7 +55,7 @@ public:
 private:
 	Playground();
 	TMXLayer* backGroundLayer;
-
+	TMXLayer* battleGroundLayer;
 	static Playground* playground;
 
 	TMXObjectGroup* objects;//µÿÕº∂‘œÛ

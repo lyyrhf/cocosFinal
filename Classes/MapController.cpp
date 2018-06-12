@@ -19,7 +19,8 @@ void Playground::initMap() {//初始化tmx，使得tmx可以被主函数加入layer
 	tmx->setPosition(visibleSize.width / 2, visibleSize.height / 2);
 	tmx->setAnchorPoint(Vec2(0.5, 0.5));
 	tmx->setScale(Director::getInstance()->getContentScaleFactor());
-	backGroundLayer = tmx->getLayer("backGroundLayer");
+	backGroundLayer = tmx->getLayer("backGround");
+	battleGroundLayer = tmx->getLayer("battleGround");
 	mapSize = tmx->getMapSize();
 	tileSize = tmx->getTileSize();
 	CCLOG("%f", tileSize.width);

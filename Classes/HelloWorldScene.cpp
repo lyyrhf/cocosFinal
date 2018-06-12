@@ -38,15 +38,7 @@ bool HelloWorld::init()
 
 
 	auto theMap =Playground::getInstance();
-	/*tmx = TMXTiledMap::create("test2.tmx");
-	tmx->setPosition(visibleSize.width / 2, visibleSize.height / 2);
-	CCLOG("%f,%f", visibleSize.width / 2, visibleSize.height / 2);
-	tmx->setAnchorPoint(Vec2(0.5, 0.5));
-	tmx->setScale(Director::getInstance()->getContentScaleFactor());
 
-	mapSize = tmx->getMapSize();
-	tileSize = tmx->getTileSize();
-	backGroundLayer = tmx->getLayer("backGroundLayer");*/
 	addChild(theMap->tmx, 0);
 
 	//创建一张贴图
@@ -367,6 +359,13 @@ void HelloWorld::movePlayer1(char c) {
 			player1->runAction(MoveBy::create(0.1f, Vec2(0, -10)));
 		}
 	}
+	if (!currentPosition.equals(theMap->tileCoordForPosition(player1->getPosition()))){
+		CCLOG("tileChange %f %f", theMap->tileCoordForPosition(player1->getPosition()).x, theMap->tileCoordForPosition(player1->getPosition()).y);
+		theMap->setColor(currentPosition, Color3B(255, 255, 255));
+		currentPosition = theMap->tileCoordForPosition(player1->getPosition());//获得新的当前地址
+		theMap->setColor(currentPosition, Color3B(100, 100, 100));
+	}
+
 }
 
 void HelloWorld::movePlayer2(char c) {

@@ -29,9 +29,6 @@ public:
 	// OpenGL坐标转成格子坐标
 	Vec2 tileCoordForPosition(const Vec2& position)
 	{
-		//CCLOG("ContentSize == %f", tmx->getContentSize().width);
-		//CCLOG("ContentSize == %f", tmx->getContentSize().height);
-		//CCLOG("%f", tileSize.width);
 		int x = (position.x) / tileSize.width * 12 / 11 - 4 ;
 		CCLOG("position.x = %f,tileSize.width = %f", position.x, tileSize.width);
 		int y = (mapSize.height*tileSize.width - position.y) /tileSize.width * 8 / 7 + 2;
@@ -43,6 +40,7 @@ public:
 		int y = (mapSize.height - tileCoord.y)*tileSize.height - tileSize.height / 2;
 		return Vec2(x, y);
 	}
+
 	Size tileSize;
 	Size mapSize;
 	TMXTiledMap* tmx;//地图文件

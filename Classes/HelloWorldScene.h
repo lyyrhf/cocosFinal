@@ -25,11 +25,11 @@ private:
 	cocos2d::ProgressTimer* pT;
 
 	//判断是否在播放动作
-	bool isAnimating;
+	//bool isAnimating;
 	//攻击
-	void attackCallback(Ref* pSender);
+	//void attackCallback(Ref* pSender);
 	//死亡
-	void deadCallback(Ref* pSender);
+	//void deadCallback(Ref* pSender);
 	//重写update，实现倒计时
 	void update(float time)override;
 
@@ -37,7 +37,7 @@ private:
 	//用来显示打倒的敌人数
 	cocos2d::Label* score;
 	//判断是否在攻击
-	bool isAttack = false;
+	//bool isAttack = false;
 	//判断是否在死亡
 	bool isDead = false;
 	//停止所有动作
@@ -72,4 +72,6 @@ private:
 	Vec2 currentPosition;
 	Color3B currentColor3B=Color3B(255,255,255);
 
+	bool isAttack1;
+	bool isAttack2;
 };

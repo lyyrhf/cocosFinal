@@ -136,7 +136,7 @@ bool HelloWorld::init()
 	schedule(schedule_selector(HelloWorld::stop), 0.1f);
     return true;
 }
-
+/*
 void HelloWorld::attackCallback(Ref * pSender)
 {
 	if (isDead == true) {
@@ -153,51 +153,55 @@ void HelloWorld::attackCallback(Ref * pSender)
 		player1->runAction(sequence);
 	}
 }
-
+*/
 void HelloWorld::attack1() {
 	theMap = Playground::getInstance();
-	auto sequence = Sequence::create(Animate::create(AnimationCache::getInstance()->getAnimation("attack")),
-		CCCallFunc::create(([this]() {
-		isAnimating = false;
-		isAttack = false;
-	})), nullptr);
-	player1->runAction(sequence);
-	attackWay1 = 1;
-	//theMap->setColor(skill1(theMap->tileCoordForPosition(player->getPosition())),Color3B(139,0,0));
-	if (attackWay1 == 1) {
-		theMap->setColor(skill1(theMap->tileCoordForPosition(player1->getPosition())), Color3B(139, 0, 0));
-	}
-	else if (attackWay1 == 2) {
-		theMap->setColor(skill2(theMap->tileCoordForPosition(player1->getPosition())), Color3B(139, 0, 0));
-	}
-	else if (attackWay1 == 3) {
-		theMap->setColor(skill3(theMap->tileCoordForPosition(player1->getPosition())), Color3B(139, 0, 0));
+	if (isMove1 == false) {
+		isAttack1 = true;
+		auto sequence = Sequence::create(Animate::create(AnimationCache::getInstance()->getAnimation("attack")),
+			CCCallFunc::create(([this]() {
+			isAttack1 = false;
+		})), nullptr);
+		player1->runAction(sequence);
+		attackWay1 = 3;
+		//theMap->setColor(skill1(theMap->tileCoordForPosition(player->getPosition())),Color3B(139,0,0));
+		if (attackWay1 == 1) {
+			theMap->setColor(skill1(theMap->tileCoordForPosition(player1->getPosition())), Color3B(139, 0, 0));
+		}
+		else if (attackWay1 == 2) {
+			theMap->setColor(skill2(theMap->tileCoordForPosition(player1->getPosition())), Color3B(139, 0, 0));
+		}
+		else if (attackWay1 == 3) {
+			theMap->setColor(skill3(theMap->tileCoordForPosition(player1->getPosition())), Color3B(139, 0, 0));
+		}
 	}
 }
 
 void HelloWorld::attack2() {
-	theMap = Playground::getInstance();
-	auto sequence = Sequence::create(Animate::create(AnimationCache::getInstance()->getAnimation("attack")),
-		CCCallFunc::create(([this]() {
-		isAnimating = false;
-		isAttack = false;
-	})), nullptr);
-	player2->runAction(sequence);
-	attackWay2 = 2;
-	//theMap->setColor(skill1(theMap->tileCoordForPosition(player->getPosition())),Color3B(139,0,0));
-	if (attackWay2 == 1) {
-		theMap->setColor(skill1(theMap->tileCoordForPosition(player2->getPosition())), Color3B(139, 0, 0));
-	}
-	else if (attackWay2 == 2) {
-		theMap->setColor(skill2(theMap->tileCoordForPosition(player2->getPosition())), Color3B(139, 0, 0));
-	}
-	else if (attackWay2 == 3) {
-		theMap->setColor(skill3(theMap->tileCoordForPosition(player2->getPosition())), Color3B(139, 0, 0));
+	if (isMove2 == false) {
+		isAttack2 = true;
+		theMap = Playground::getInstance();
+		auto sequence = Sequence::create(Animate::create(AnimationCache::getInstance()->getAnimation("attack")),
+			CCCallFunc::create(([this]() {
+			isAttack2 = false;
+		})), nullptr);
+		player2->runAction(sequence);
+		attackWay2 = 3;
+		//theMap->setColor(skill1(theMap->tileCoordForPosition(player->getPosition())),Color3B(139,0,0));
+		if (attackWay2 == 1) {
+			theMap->setColor(skill1(theMap->tileCoordForPosition(player2->getPosition())), Color3B(139, 0, 0));
+		}
+		else if (attackWay2 == 2) {
+			theMap->setColor(skill2(theMap->tileCoordForPosition(player2->getPosition())), Color3B(139, 0, 0));
+		}
+		else if (attackWay2 == 3) {
+			theMap->setColor(skill3(theMap->tileCoordForPosition(player2->getPosition())), Color3B(139, 0, 0));
+		}
 	}
 }
 
 
-
+/*
 void HelloWorld::deadCallback(Ref * pSender)
 {
 	if (isDead == false) {
@@ -211,7 +215,7 @@ void HelloWorld::deadCallback(Ref * pSender)
 		unschedule(schedule_selector(HelloWorld::update));
 	}
 }
-
+*/
 
 /*
 update实现倒计时的功能，其中开始的值是180
@@ -334,33 +338,35 @@ void HelloWorld::addKeyboardListener() {
 }
 //0是上，1是下，2是左，3是右
 void HelloWorld::movePlayer1(char c) {
-	theMap = Playground::getInstance();
-	CCLOG("Player == %f,%f", player1->getPosition().x, player1->getPosition().y);
-	CCLOG("OpenGL == %f,%f", theMap->tileCoordForPosition(player1->getPosition()).x , theMap->tileCoordForPosition(player1->getPosition()).y + 2);
-	if (c == 'A') {
-		player1Direction = 2;
-		player1->setFlippedX(true);
-		if (player1->getPosition().x > 0) {
-			player1->runAction(MoveBy::create(0.1f, Vec2(-10, 0)));
+	if (isAttack1 == false) {
+		theMap = Playground::getInstance();
+		CCLOG("Player == %f,%f", player1->getPosition().x, player1->getPosition().y);
+		CCLOG("OpenGL == %f,%f", theMap->tileCoordForPosition(player1->getPosition()).x, theMap->tileCoordForPosition(player1->getPosition()).y + 2);
+		if (c == 'A') {
+			player1Direction = 2;
+			player1->setFlippedX(true);
+			if (player1->getPosition().x > 0) {
+				player1->runAction(MoveBy::create(0.1f, Vec2(-10, 0)));
+			}
 		}
-	}
-	else if (c == 'D') {
-		player1Direction = 3;
-		player1->setFlippedX(false);
-		if (player1->getPosition().x < visibleSize.width) {
-			player1->runAction(MoveBy::create(0.1f, Vec2(10, 0)));
+		else if (c == 'D') {
+			player1Direction = 3;
+			player1->setFlippedX(false);
+			if (player1->getPosition().x < visibleSize.width) {
+				player1->runAction(MoveBy::create(0.1f, Vec2(10, 0)));
+			}
 		}
-	}
-	else if (c == 'W') {
-		player1Direction = 0;
-		if (player1->getPosition().y < visibleSize.height) {
-			player1->runAction(MoveBy::create(0.1f, Vec2(0, 10)));
+		else if (c == 'W') {
+			player1Direction = 0;
+			if (player1->getPosition().y < visibleSize.height) {
+				player1->runAction(MoveBy::create(0.1f, Vec2(0, 10)));
+			}
 		}
-	}
-	else if (c == 'S') {
-		player1Direction = 1;
-		if (player1->getPosition().y > 0) {
-			player1->runAction(MoveBy::create(0.1f, Vec2(0, -10)));
+		else if (c == 'S') {
+			player1Direction = 1;
+			if (player1->getPosition().y > 0) {
+				player1->runAction(MoveBy::create(0.1f, Vec2(0, -10)));
+			}
 		}
 	}
 	if (!currentPosition.equals(theMap->tileCoordForPosition(player1->getPosition()))){//当格子变动时
@@ -374,29 +380,31 @@ void HelloWorld::movePlayer1(char c) {
 }
 
 void HelloWorld::movePlayer2(char c) {
-	theMap = Playground::getInstance();
-	CCLOG("Player == %f,%f", player1->getPosition().x, player1->getPosition().y);
-	CCLOG("OpenGL == %f,%f", theMap->tileCoordForPosition(player1->getPosition()).x, theMap->tileCoordForPosition(player1->getPosition()).y + 2);
-	if (c == 'A') {
-		player2->setFlippedX(true);
-		if (player2->getPosition().x > 0) {
-			player2->runAction(MoveBy::create(0.1f, Vec2(-10, 0)));
+	if (isAttack2 == false) {
+		theMap = Playground::getInstance();
+		CCLOG("Player == %f,%f", player1->getPosition().x, player1->getPosition().y);
+		CCLOG("OpenGL == %f,%f", theMap->tileCoordForPosition(player1->getPosition()).x, theMap->tileCoordForPosition(player1->getPosition()).y + 2);
+		if (c == 'A') {
+			player2->setFlippedX(true);
+			if (player2->getPosition().x > 0) {
+				player2->runAction(MoveBy::create(0.1f, Vec2(-10, 0)));
+			}
 		}
-	}
-	else if (c == 'D') {
-		player2->setFlippedX(false);
-		if (player2->getPosition().x < visibleSize.width) {
-			player2->runAction(MoveBy::create(0.1f, Vec2(10, 0)));
+		else if (c == 'D') {
+			player2->setFlippedX(false);
+			if (player2->getPosition().x < visibleSize.width) {
+				player2->runAction(MoveBy::create(0.1f, Vec2(10, 0)));
+			}
 		}
-	}
-	else if (c == 'W') {
-		if (player2->getPosition().y < visibleSize.height) {
-			player2->runAction(MoveBy::create(0.1f, Vec2(0, 10)));
+		else if (c == 'W') {
+			if (player2->getPosition().y < visibleSize.height) {
+				player2->runAction(MoveBy::create(0.1f, Vec2(0, 10)));
+			}
 		}
-	}
-	else if (c == 'S') {
-		if (player2->getPosition().y > 0) {
-			player2->runAction(MoveBy::create(0.1f, Vec2(0, -10)));
+		else if (c == 'S') {
+			if (player2->getPosition().y > 0) {
+				player2->runAction(MoveBy::create(0.1f, Vec2(0, -10)));
+			}
 		}
 	}
 }
@@ -450,15 +458,38 @@ std::vector<Vec2> HelloWorld::skill2(Vec2 input)
 std::vector<Vec2> HelloWorld::skill3(Vec2 input)
 {
 	std::vector<Vec2> skillArea;
-
-	Vec2 eDirection1 = Vec2(input.x + 1, input.y);
-	Vec2 eDirection2 = Vec2(input.x + 2, input.y);
-	Vec2 eDirection3 = Vec2(input.x + 3, input.y);
-	Vec2 eDirection4 = Vec2(input.x + 4, input.y);
-	skillArea.push_back(eDirection1);
-	skillArea.push_back(eDirection2);
-	skillArea.push_back(eDirection3);
-	skillArea.push_back(eDirection4);
+	Vec2 Direction1;
+	Vec2 Direction2;
+	Vec2 Direction3;
+	Vec2 Direction4;
+	if (player1Direction == 3) {
+		Direction1 = Vec2(input.x + 1, input.y);
+		Direction2 = Vec2(input.x + 2, input.y);
+		Direction3 = Vec2(input.x + 3, input.y);
+		Direction4 = Vec2(input.x + 4, input.y);
+	}
+	else if (player1Direction == 2) {
+		Direction1 = Vec2(input.x - 1, input.y);
+		Direction2 = Vec2(input.x - 2, input.y);
+		Direction3 = Vec2(input.x - 3, input.y);
+		Direction4 = Vec2(input.x - 4, input.y);
+	}
+	else if (player1Direction == 1) {
+		Direction1 = Vec2(input.x, input.y + 1);
+		Direction2 = Vec2(input.x, input.y + 2);
+		Direction3 = Vec2(input.x, input.y + 3);
+		Direction4 = Vec2(input.x, input.y + 4);
+	}
+	else if (player1Direction == 0) {
+		Direction1 = Vec2(input.x, input.y - 1);
+		Direction2 = Vec2(input.x, input.y - 2);
+		Direction3 = Vec2(input.x, input.y - 3);
+		Direction4 = Vec2(input.x, input.y - 4);
+	}
+	skillArea.push_back(Direction1);
+	skillArea.push_back(Direction2);
+	skillArea.push_back(Direction3);
+	skillArea.push_back(Direction4);
 	skillArea.push_back(input);
 	return skillArea;
 }

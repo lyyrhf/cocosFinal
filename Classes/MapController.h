@@ -32,9 +32,9 @@ public:
 	// OpenGL坐标转成格子坐标
 	Vec2 tileCoordForPosition(const Vec2& position)
 	{
-		int x = (position.x) / tileSize.width * 12 / 11 - 4 ;
+		int x = (position.x) / tileSize.width;// *12 / 11 - 4;
 		CCLOG("position.x = %f,tileSize.width = %f", position.x, tileSize.width);
-		int y = (mapSize.height*tileSize.width - position.y) /tileSize.width * 8 / 7 + 2;
+		int y = (mapSize.height*tileSize.width - position.y) / tileSize.width;// *8 / 7 + 2;
 		return Vec2(x, y);
 	}
 	Vec2 positionForTileCoord(const Vec2& tileCoord)
@@ -44,7 +44,7 @@ public:
 		return Vec2(x, y);
 	}
 	bool isValid(Vec2 position) {//这个函数判断一个格子是否在战斗区域内
-		if (position.x < 0 || position.y < 0 || position.x>11 || position.y>7) {
+		if (position.x < 2.9 || position.y < 5.9 || position.x>14 || position.y>11) {
 			return false;
 		}
 		return true;

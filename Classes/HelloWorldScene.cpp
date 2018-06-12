@@ -341,7 +341,24 @@ void HelloWorld::movePlayer1(char c) {
 	if (isAttack1 == false) {
 		theMap = Playground::getInstance();
 		CCLOG("Player == %f,%f", player1->getPosition().x, player1->getPosition().y);
-		CCLOG("OpenGL == %f,%f", theMap->tileCoordForPosition(player1->getPosition()).x, theMap->tileCoordForPosition(player1->getPosition()).y + 2);
+		CCLOG("OpenGL == %f,%f", theMap->tileCoordForPosition(player1->getPosition()).x, theMap->tileCoordForPosition(player1->getPosition()).y);
+		auto test = player1->getPosition();
+		if (c == 'A') {//测试这么走是否会出界
+			test += Vec2(-10, 0);
+		}
+		else if (c == 'D') {
+			test += Vec2(10, 0); 
+		}
+		else if (c == 'W') {
+			test += Vec2(0, 10);
+		}
+		else if (c == 'S') {
+			test += Vec2(0, -10);
+		}
+		if (!theMap->isValid(theMap->tileCoordForPosition(test))) {//如果会出界，则将不执行这个指令
+			return;
+		}
+
 		if (c == 'A') {
 			player1Direction = 2;
 			player1->setFlippedX(true);

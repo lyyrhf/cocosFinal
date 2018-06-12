@@ -25,7 +25,10 @@ public:
 			setColor(inputPosition.at(i), inputColor);
 		}
 	}
-
+	Color3B getColor(Vec2 inputPosition) {//获取一个格子的颜色
+		auto tile1 = backGroundLayer->getTileAt(Point(inputPosition.x, inputPosition.y));//获取指定格子
+		return tile1->getColor();
+	}
 	// OpenGL坐标转成格子坐标
 	Vec2 tileCoordForPosition(const Vec2& position)
 	{

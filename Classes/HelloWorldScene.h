@@ -65,5 +65,5 @@ private:
 	std::vector<Vec2> skill3(Vec2 temp);
 	Playground * theMap;
 	Vec2 currentPosition;
-
+	Color3B currentColor3B=Color3B(255,255,255);
 };

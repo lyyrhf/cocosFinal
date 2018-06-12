@@ -359,11 +359,12 @@ void HelloWorld::movePlayer1(char c) {
 			player1->runAction(MoveBy::create(0.1f, Vec2(0, -10)));
 		}
 	}
-	if (!currentPosition.equals(theMap->tileCoordForPosition(player1->getPosition()))){
+	if (!currentPosition.equals(theMap->tileCoordForPosition(player1->getPosition()))){//当格子变动时
 		CCLOG("tileChange %f %f", theMap->tileCoordForPosition(player1->getPosition()).x, theMap->tileCoordForPosition(player1->getPosition()).y);
-		theMap->setColor(currentPosition, Color3B(255, 255, 255));
+		theMap->setColor(currentPosition, currentColor3B);//上一个格子恢复先前颜色
 		currentPosition = theMap->tileCoordForPosition(player1->getPosition());//获得新的当前地址
-		theMap->setColor(currentPosition, Color3B(100, 100, 100));
+		currentColor3B = theMap->getColor(currentPosition);//保存当前位置的颜色
+		theMap->setColor(currentPosition, Color3B(100, 100, 100));//当前位置变成灰色
 	}
 
 }

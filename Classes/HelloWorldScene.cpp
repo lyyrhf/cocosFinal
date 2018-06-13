@@ -41,22 +41,75 @@ bool HelloWorld::init()
 
 	addChild(theMap->tmx, 0);
 
-	//创建一张贴图
-	auto texture = Director::getInstance()->getTextureCache()->addImage("$lucia_2.png");
+	//创建一张贴图(player1的)
+	auto texture = Director::getInstance()->getTextureCache()->addImage("player1.png");
 	//从贴图中以像素单位切割，创建关键帧
-	auto frame0 = SpriteFrame::createWithTexture(texture, CC_RECT_PIXELS_TO_POINTS(Rect(0, 0, 113, 113)));
+	SpriteFrame* frame[16];// = new frame[15];
+	for (int i = 0; i < 4; ++i) {
+		frame[4 * i] = SpriteFrame::createWithTexture(texture, CC_RECT_PIXELS_TO_POINTS(Rect(0, i * 100, 100, 100)));
+		frame[4 * i+1] = SpriteFrame::createWithTexture(texture, CC_RECT_PIXELS_TO_POINTS(Rect(100, i*100, 100, 100)));
+		frame[4 * i+2] = SpriteFrame::createWithTexture(texture, CC_RECT_PIXELS_TO_POINTS(Rect(200, i*100, 100, 100)));
+		frame[4 * i+3] = SpriteFrame::createWithTexture(texture, CC_RECT_PIXELS_TO_POINTS(Rect(300, i*100, 100, 100)));
+		if (i == 0) {//向下走
+			down.reserve(4);
+			down.pushBack(frame[4 * i]);
+			down.pushBack(frame[4 * i + 1]);
+			down.pushBack(frame[4 * i + 2]);
+			down.pushBack(frame[4 * i + 3]);
+
+			auto downAnimation = Animation::createWithSpriteFrames(down, 0.1f);
+			AnimationCache::getInstance()->addAnimation(downAnimation, "down");
+		}else
+		if (i == 1) {//向左走
+			left.reserve(4);
+			left.pushBack(frame[4 * i]);
+			left.pushBack(frame[4 * i + 1]);
+			left.pushBack(frame[4 * i + 2]);
+			left.pushBack(frame[4 * i + 3]);
+
+			auto leftAnimation = Animation::createWithSpriteFrames(left, 0.1f);
+			AnimationCache::getInstance()->addAnimation(leftAnimation, "left");
+		}else
+		if (i == 2) {//向右走
+			right.reserve(4);
+			right.pushBack(frame[4 * i]);
+			right.pushBack(frame[4 * i + 1]);
+			right.pushBack(frame[4 * i + 2]);
+			right.pushBack(frame[4 * i + 3]);
+
+			auto rightAnimation = Animation::createWithSpriteFrames(right, 0.1f);
+			AnimationCache::getInstance()->addAnimation(rightAnimation, "right");
+		}else
+		if (i == 3) {//向上走
+			up.reserve(4);
+			up.pushBack(frame[4 * i]);
+			up.pushBack(frame[4 * i + 1]);
+			up.pushBack(frame[4 * i + 2]);
+			up.pushBack(frame[4 * i + 3]);
+
+			auto upAnimation = Animation::createWithSpriteFrames(up, 0.1f);
+			AnimationCache::getInstance()->addAnimation(upAnimation, "up");
+		}
+	}// 行走动画创建完成
+	//auto frame0 = SpriteFrame::createWithTexture(texture, CC_RECT_PIXELS_TO_POINTS(Rect(0, 0, 100, 100)));
+
+
 	//使用第一帧创建精灵
-	player1 = Sprite::createWithSpriteFrame(frame0);
+	player1 = Sprite::createWithSpriteFrame(frame[0]);
 	player1->setPosition(Vec2(origin.x + visibleSize.width / 2,
 		origin.y + visibleSize.height / 2));
 	addChild(player1, 3);
 	player1->setAnchorPoint(Point(0.5,0.5));
 
-	player2 = Sprite::createWithSpriteFrame(frame0);
+	player2 = Sprite::createWithSpriteFrame(frame[0]);
 	player2->setPosition(Vec2(origin.x + visibleSize.width / 2 + 200,
 		origin.y + visibleSize.height / 2 + 50));
 	addChild(player2, 3);
 	player2->setAnchorPoint(Point(0.5, 0.5));
+
+	// 静态动画
+	idle.reserve(1);
+	idle.pushBack(frame[0]);//静止状态是第一帧
 
 	//hp条
 	Sprite* sp0 = Sprite::create("hp.png", CC_RECT_PIXELS_TO_POINTS(Rect(0, 320, 420, 47)));
@@ -76,45 +129,8 @@ bool HelloWorld::init()
 	sp0->setPosition(Vec2(origin.x + pT->getContentSize().width, origin.y + visibleSize.height - sp0->getContentSize().height));
 	addChild(sp0, 0);
 
-	// 静态动画
-	idle.reserve(1);
-	idle.pushBack(frame0);
 
-	// 攻击动画
-	attack.reserve(17);
-	for (int i = 0; i < 17; i++) {
-		auto frame = SpriteFrame::createWithTexture(texture, CC_RECT_PIXELS_TO_POINTS(Rect(113 * i, 0, 113, 113)));
-		attack.pushBack(frame);
-	}
-	//这里又加入了frame0，原因是，动作结束之后要处理静止状态，而不是动作结束之后的状态
-	attack.pushBack(frame0);
-	auto attackAnimation = Animation::createWithSpriteFrames(attack, 0.1f);
-	AnimationCache::getInstance()->addAnimation(attackAnimation, "attack");
 
-	// 可以仿照攻击动画
-	// 死亡动画(帧数：22帧，高：90，宽：79）
-	auto texture2 = Director::getInstance()->getTextureCache()->addImage("$lucia_dead.png");
-	// Todo
-	dead.reserve(22);
-	for (int i = 0; i < 22; i++) {
-		auto frame = SpriteFrame::createWithTexture(texture2, CC_RECT_PIXELS_TO_POINTS(Rect(79 * i, 0, 79, 90)));
-		dead.pushBack(frame);
-	}
-	//dead.pushBack(frame0);
-	auto deadAnimation = Animation::createWithSpriteFrames(dead, 0.1f);
-	AnimationCache::getInstance()->addAnimation(deadAnimation, "dead");
-
-	// 运动动画(帧数：8帧，高：101，宽：68）
-	auto texture3 = Director::getInstance()->getTextureCache()->addImage("$lucia_forward.png");
-	// Todo
-	run.reserve(8);
-	for (int i = 0; i < 2; i++) {
-		auto frame = SpriteFrame::createWithTexture(texture3, CC_RECT_PIXELS_TO_POINTS(Rect(68 * i, 0, 68, 101)));
-		run.pushBack(frame);
-	}
-	run.pushBack(frame0);
-	auto runAnimation = Animation::createWithSpriteFrames(run, 0.1f);
-	AnimationCache::getInstance()->addAnimation(runAnimation, "run");
 
 	auto menu = Menu::create();
 	menu->setPosition(80, 50);
@@ -363,29 +379,49 @@ void HelloWorld::movePlayer1(char c) {
 
 		if (c == 'A') {
 			player1Direction = 2;
-			player1->setFlippedX(true);
-			if (player1->getPosition().x > 0) {
-				player1->runAction(MoveBy::create(0.1f, Vec2(-10, 0)));
-			}
+
+
+			auto spawn = Spawn::createWithTwoActions(Animate::create(
+				AnimationCache::getInstance()->getAnimation("left")),
+				MoveBy::create(0.1f, Vec2(-10, 0)));
+			auto sequence = Sequence::create(spawn, CCCallFunc::create(([this]() {
+				
+			})), nullptr);
+			player1->runAction(sequence);
 		}
 		else if (c == 'D') {
 			player1Direction = 3;
-			player1->setFlippedX(false);
-			if (player1->getPosition().x < visibleSize.width) {
-				player1->runAction(MoveBy::create(0.1f, Vec2(10, 0)));
-			}
+
+			
+			auto spawn = Spawn::createWithTwoActions(Animate::create(
+				AnimationCache::getInstance()->getAnimation("right")),
+				MoveBy::create(0.1f, Vec2(10, 0)));
+			auto sequence = Sequence::create(spawn, CCCallFunc::create(([this]() {
+
+			})), nullptr);
+			player1->runAction(sequence);
 		}
 		else if (c == 'W') {
 			player1Direction = 0;
-			if (player1->getPosition().y < visibleSize.height) {
-				player1->runAction(MoveBy::create(0.1f, Vec2(0, 10)));
-			}
+
+			auto spawn = Spawn::createWithTwoActions(Animate::create(
+				AnimationCache::getInstance()->getAnimation("up")),
+				MoveBy::create(0.1f, Vec2(0, 10)));
+			auto sequence = Sequence::create(spawn, CCCallFunc::create(([this]() {
+
+			})), nullptr);
+			player1->runAction(sequence);
 		}
 		else if (c == 'S') {
 			player1Direction = 1;
-			if (player1->getPosition().y > 0) {
-				player1->runAction(MoveBy::create(0.1f, Vec2(0, -10)));
-			}
+
+			auto spawn = Spawn::createWithTwoActions(Animate::create(
+				AnimationCache::getInstance()->getAnimation("down")),
+				MoveBy::create(0.1f, Vec2(0, -10)));
+			auto sequence = Sequence::create(spawn, CCCallFunc::create(([this]() {
+
+			})), nullptr);
+			player1->runAction(sequence);
 		}
 	}
 	if (!currentPosition.equals(theMap->tileCoordForPosition(player1->getPosition()))){//当格子变动时

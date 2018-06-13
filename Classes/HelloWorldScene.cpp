@@ -120,6 +120,19 @@ bool HelloWorld::init()
 	menu->setPosition(80, 50);
 	addChild(menu);
 
+	/*auto player3 = Sprite::create("07.png");
+	player3->setPosition(360,240);
+	addChild(player3);*/
+
+	windAnimation = new Animation();
+	char frameName[100] = { 0 };
+	for (int i = 1; i<=12; i++) {
+		sprintf(frameName, "%02d.png", i);
+		windAnimation->addSpriteFrameWithFileName(frameName);
+	}
+
+	//CCActionInterval*  action = CCAnimate::actionWithDuration(1.0f, animation, false);
+
 	//倒计时
 	time = Label::createWithTTF("180", "fonts/arial.ttf", 36);
 	time->setPosition(origin.x + visibleSize.width / 2, origin.y + visibleSize.height -50);
@@ -155,16 +168,22 @@ void HelloWorld::attackCallback(Ref * pSender)
 }
 */
 void HelloWorld::attack1() {
-	theMap = Playground::getInstance();
 	if (isMove1 == false) {
+		auto wind = Sprite::create("01.png");
+		wind->setPosition(player1->getPosition());
+		theMap = Playground::getInstance();
 		isAttack1 = true;
-		auto sequence = Sequence::create(Animate::create(AnimationCache::getInstance()->getAnimation("attack")),
+		auto windAttack = Animate::create(windAnimation);
+		windAttack->setDuration(1.0f);
+		auto sequence = Sequence::create(/*Animate::create(AnimationCache::getInstance()->getAnimation("attack"))*/windAttack,
 			CCCallFunc::create(([this]() {
 			isAttack1 = false;
 		})), nullptr);
 		player1->runAction(sequence);
-		attackWay1 = 3;
-		//theMap->setColor(skill1(theMap->tileCoordForPosition(player->getPosition())),Color3B(139,0,0));
+		player1->addChild(wind);
+		wind->runAction(windAttack);
+		attackWay1 = 2;
+
 		if (attackWay1 == 1) {
 			theMap->setColor(skill1(theMap->tileCoordForPosition(player1->getPosition())), Color3B(139, 0, 0));
 		}

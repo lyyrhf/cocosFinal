@@ -18,19 +18,18 @@ private:
 	cocos2d::Vector<SpriteFrame*> dead;
 	cocos2d::Vector<SpriteFrame*> run;
 	cocos2d::Vector<SpriteFrame*> idle;
+	cocos2d::Vector<SpriteFrame*> down;//上下左右移动的动画帧
+	cocos2d::Vector<SpriteFrame*> up;
+	cocos2d::Vector<SpriteFrame*> left;
+	cocos2d::Vector<SpriteFrame*> right;
+
 	cocos2d::Size visibleSize;
 	cocos2d::Vec2 origin;
 	cocos2d::Label* time;
 	int dtime;
 	cocos2d::ProgressTimer* pT;
 
-	//判断是否在播放动作
-	//bool isAnimating;
-	//攻击
-	//void attackCallback(Ref* pSender);
-	//死亡
-	//void deadCallback(Ref* pSender);
-	//重写update，实现倒计时
+
 	void update(float time)override;
 
 	//下面是新加的变量

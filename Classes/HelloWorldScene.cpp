@@ -191,6 +191,7 @@ void HelloWorld::attack1() {
 			nullptr
 		);
 		player1->runAction(sequence1);
+		currentColor3B = theMap->getColor(currentPosition);//更新脚底下的Color
 		attackWay1 = 3;
 
 		if (attackWay1 == 1) {

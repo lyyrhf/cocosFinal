@@ -182,7 +182,7 @@ void HelloWorld::attack1() {
 		player1->runAction(sequence);
 		player1->addChild(wind);
 		wind->runAction(windAttack);
-		attackWay1 = 2;
+		attackWay1 = 3;
 
 		if (attackWay1 == 1) {
 			theMap->setColor(skill1(theMap->tileCoordForPosition(player1->getPosition())), Color3B(139, 0, 0));

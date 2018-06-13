@@ -22,7 +22,8 @@ public:
 	void setColor(std::vector<Vec2> inputPosition, Color3B inputColor) {//这个函数按次序改变队列中格子的颜色
 		setColor(inputPosition.at(0), inputColor);
 		for (int i = 0; i < inputPosition.size(); i++) {
-			setColor(inputPosition.at(i), inputColor);
+			if(isValid(inputPosition.at(i)))//仅当位置合法的时候变色
+				setColor(inputPosition.at(i), inputColor);
 		}
 	}
 	Color3B getColor(Vec2 inputPosition) {//获取一个格子的颜色

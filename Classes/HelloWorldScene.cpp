@@ -136,24 +136,7 @@ bool HelloWorld::init()
 	schedule(schedule_selector(HelloWorld::stop), 0.1f);
     return true;
 }
-/*
-void HelloWorld::attackCallback(Ref * pSender)
-{
-	if (isDead == true) {
-		return;
-	}
-	if (isAnimating == false) {
-		isAnimating = true;
-		isAttack = true;
-		auto sequence = Sequence::create(Animate::create(AnimationCache::getInstance()->getAnimation("attack")),
-			CCCallFunc::create(([this]() {
-			isAnimating = false;
-			isAttack = false;
-		})), nullptr);
-		player1->runAction(sequence);
-	}
-}
-*/
+
 void HelloWorld::attack1() {
 	theMap = Playground::getInstance();
 	if (isMove1 == false) {

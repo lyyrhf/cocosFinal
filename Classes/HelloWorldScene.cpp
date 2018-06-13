@@ -344,16 +344,16 @@ void HelloWorld::movePlayer1(char c) {
 		CCLOG("OpenGL == %f,%f", theMap->tileCoordForPosition(player1->getPosition()).x, theMap->tileCoordForPosition(player1->getPosition()).y);
 		auto test = player1->getPosition();
 		if (c == 'A') {//测试这么走是否会出界
-			test += Vec2(-10, 0);
+			test += Vec2(-20, 0);
 		}
 		else if (c == 'D') {
-			test += Vec2(10, 0); 
+			test += Vec2(20, 0); 
 		}
 		else if (c == 'W') {
-			test += Vec2(0, 10);
+			test += Vec2(0, 20);
 		}
 		else if (c == 'S') {
-			test += Vec2(0, -10);
+			test += Vec2(0, -40);
 		}
 		if (!theMap->isValid(theMap->tileCoordForPosition(test))) {//如果会出界，则将不执行这个指令
 			return;
@@ -426,7 +426,7 @@ void HelloWorld::movePlayer2(char c) {
 	}
 }
 
-std::vector<Vec2> HelloWorld::skill1(Vec2 input)
+std::vector<Vec2> HelloWorld::skill1(Vec2 input)//十字形攻击
 {
 	std::vector<Vec2> skillArea;
 	Vec2 wDirection1 = Vec2(input.x, input.y - 1);
@@ -449,7 +449,7 @@ std::vector<Vec2> HelloWorld::skill1(Vec2 input)
 	return skillArea;
 }
 
-std::vector<Vec2> HelloWorld::skill2(Vec2 input) 
+std::vector<Vec2> HelloWorld::skill2(Vec2 input) //九宫格形攻击  
 {
 	std::vector<Vec2> skillArea;
 	Vec2 nDirection = Vec2(input.x, input.y - 1);

@@ -141,7 +141,9 @@ bool HelloWorld::init()
 	addChild(player3);*/
 
 
-	windAttack();
+	loadWindAttack();
+	loadFireAttack();
+	loadDargonAttack();
 
 	//倒计时
 	time = Label::createWithTTF("180", "fonts/arial.ttf", 36);
@@ -164,33 +166,10 @@ void HelloWorld::attack1() {
 	if (isMove1 == false) {
 		theMap = Playground::getInstance();
 		isAttack1 = true;
-		auto skill = Sprite::create("01.png");
-		skill->setAnchorPoint(Point(0.4,0.5));
-		skill->setPosition(player1->getPosition());
-		auto skillFadeOut = FadeOut::create(0.5);
-		auto callBackRemove = CallFunc::create([this, &skill]() {
-			this->removeChild(skill);
-		});
-		auto wind = Animation::createWithSpriteFrames(windAnimation, 0.1f);
-		auto action = Animate::create(wind);
-		auto sequence = Sequence::create(
-			action,
-			skillFadeOut,
-			callBackRemove,
-			CCCallFunc::create(([this]() {
-			isAttack1 = false;
-		})), nullptr);
-		addChild(skill);
-		skill->runAction(sequence);
-
-		auto jumpBy1 = JumpBy::create(0.7f,Point(0,50),50,1);
-		auto jumpBy2 = JumpBy::create(0.3f, Point(0, -50), -50, 1);
-		auto sequence1 = Sequence::create(
-			jumpBy1,
-			jumpBy2,
-			nullptr
-		);
-		player1->runAction(sequence1);
+		
+		//playWindAttack();
+		//playFireAttack();
+		playDargonAttack();
 		currentColor3B = theMap->getColor(currentPosition);//更新脚底下的Color
 		attackWay1 = 3;
 
@@ -561,7 +540,7 @@ std::vector<Vec2> HelloWorld::skill3(Vec2 input)
 }
 
 
-void HelloWorld::windAttack() 
+void HelloWorld::loadWindAttack() 
 {
 	char frameName[100] = { 0 };
 	for (int i = 1; i <= 12; i++) {
@@ -569,4 +548,95 @@ void HelloWorld::windAttack()
 		SpriteFrame* pngNameSF = SpriteFrame::create(frameName, Rect(0, 0, 300, 300));
 		windAnimation.pushBack(pngNameSF);
 	}
+}
+
+void HelloWorld::playWindAttack() {
+	auto skill = Sprite::create("01.png");
+	skill->setAnchorPoint(Point(0.4, 0.5));
+	skill->setPosition(player1->getPosition());
+	auto skillFadeOut = FadeOut::create(0.5);
+	auto callBackRemove = CallFunc::create([this, &skill]() {
+		this->removeChild(skill);
+	});
+	auto wind = Animation::createWithSpriteFrames(windAnimation, 0.1f);
+	auto action = Animate::create(wind);
+	auto sequence = Sequence::create(
+		action,
+		skillFadeOut,
+		callBackRemove,
+		CCCallFunc::create(([this]() {
+		isAttack1 = false;
+	})), nullptr);
+	addChild(skill);
+	skill->runAction(sequence);
+	auto jumpBy1 = JumpBy::create(0.7f, Point(0, 50), 50, 1);
+	auto jumpBy2 = JumpBy::create(0.3f, Point(0, -50), -50, 1);
+	auto sequence1 = Sequence::create(
+		jumpBy1,
+		jumpBy2,
+		nullptr
+	);
+	player1->runAction(sequence1);
+}
+
+void HelloWorld::loadFireAttack()
+{
+	char frameName[100] = { 0 };
+	for (int i = 0; i < 8; i++) {
+		sprintf(frameName, "fire%d.png", i);
+		SpriteFrame* pngNameSF = SpriteFrame::create(frameName, Rect(0, 0, 300, 300));
+		fireAnimation.pushBack(pngNameSF);
+	}
+}
+
+void HelloWorld::playFireAttack() {
+	auto skill = Sprite::create("fire1.png");
+	skill->setAnchorPoint(Point(0, 0.8));
+	skill->setPosition(player1->getPosition());
+	auto skillFadeOut = FadeOut::create(0.5);
+	auto callBackRemove = CallFunc::create([this, &skill]() {
+		this->removeChild(skill);
+	});
+	auto fire = Animation::createWithSpriteFrames(fireAnimation, 0.1f);
+	auto action = Animate::create(fire);
+	auto sequence = Sequence::create(
+		action,
+		skillFadeOut,
+		callBackRemove,
+		CCCallFunc::create(([this]() {
+		isAttack1 = false;
+	})), nullptr);
+	addChild(skill);
+	skill->runAction(sequence);
+}
+
+void HelloWorld::loadDargonAttack()
+{
+	char frameName[100] = { 0 };
+	for (int i = 1; i <= 19; i++) {
+		sprintf(frameName, "dargon%02d.png", i);
+		SpriteFrame* pngNameSF = SpriteFrame::create(frameName, Rect(0, 0, 300, 300));
+		dargonAnimation.pushBack(pngNameSF);
+	}
+}
+
+void HelloWorld::playDargonAttack() {
+	auto skill = Sprite::create("dargon01.png");
+	skill->setAnchorPoint(Point(0.2, 0.2));
+	skill->setPosition(player1->getPosition());
+	auto skillFadeOut = FadeOut::create(0.5);
+	auto callBackRemove = CallFunc::create([this, &skill]() {
+		this->removeChild(skill);
+	});
+	auto dargon = Animation::createWithSpriteFrames(dargonAnimation, 0.1f);
+	auto action = Animate::create(dargon);
+	auto sequence = Sequence::create(
+		action,
+		skillFadeOut,
+		callBackRemove,
+		CCCallFunc::create(([this]() {
+		isAttack1 = false;
+	})), nullptr);
+	addChild(skill);
+	skill->runAction(sequence);
 }

@@ -22,7 +22,8 @@ public:
 	void setColor(std::vector<Vec2> inputPosition, Color3B inputColor) {//这个函数按次序改变队列中格子的颜色
 		setColor(inputPosition.at(0), inputColor);
 		for (int i = 0; i < inputPosition.size(); i++) {
-			setColor(inputPosition.at(i), inputColor);
+			if(isValid(inputPosition.at(i)))//仅当位置合法的时候变色
+				setColor(inputPosition.at(i), inputColor);
 		}
 	}
 	Color3B getColor(Vec2 inputPosition) {//获取一个格子的颜色
@@ -32,9 +33,9 @@ public:
 	// OpenGL坐标转成格子坐标
 	Vec2 tileCoordForPosition(const Vec2& position)
 	{
-		int x = (position.x) / tileSize.width * 12 / 11 - 4 ;
+		int x = (position.x) / tileSize.width;// *12 / 11 - 4;
 		CCLOG("position.x = %f,tileSize.width = %f", position.x, tileSize.width);
-		int y = (mapSize.height*tileSize.width - position.y) /tileSize.width * 8 / 7 + 2;
+		int y = (mapSize.height*tileSize.width - position.y) / tileSize.width;// *8 / 7 + 2;
 		return Vec2(x, y);
 	}
 	Vec2 positionForTileCoord(const Vec2& tileCoord)
@@ -44,7 +45,7 @@ public:
 		return Vec2(x, y);
 	}
 	bool isValid(Vec2 position) {//这个函数判断一个格子是否在战斗区域内
-		if (position.x < 0 || position.y < 0 || position.x>11 || position.y>7) {
+		if (position.x < 2.9 || position.y < 5.9 || position.x>14 || position.y>11) {
 			return false;
 		}
 		return true;

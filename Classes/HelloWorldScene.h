@@ -75,5 +75,6 @@ private:
 	bool isAttack1;
 	bool isAttack2;
 
-	Animation* windAnimation;
+	void windAttack();
+	Vector<SpriteFrame*> windAnimation;
 };

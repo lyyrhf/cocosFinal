@@ -124,14 +124,8 @@ bool HelloWorld::init()
 	player3->setPosition(360,240);
 	addChild(player3);*/
 
-	windAnimation = new Animation();
-	char frameName[100] = { 0 };
-	for (int i = 1; i<=12; i++) {
-		sprintf(frameName, "%02d.png", i);
-		windAnimation->addSpriteFrameWithFileName(frameName);
-	}
 
-	//CCActionInterval*  action = CCAnimate::actionWithDuration(1.0f, animation, false);
+	windAttack();
 
 	//倒计时
 	time = Label::createWithTTF("180", "fonts/arial.ttf", 36);
@@ -152,19 +146,35 @@ bool HelloWorld::init()
 
 void HelloWorld::attack1() {
 	if (isMove1 == false) {
-		auto wind = Sprite::create("01.png");
-		wind->setPosition(player1->getPosition());
 		theMap = Playground::getInstance();
 		isAttack1 = true;
-		auto windAttack = Animate::create(windAnimation);
-		windAttack->setDuration(1.0f);
-		auto sequence = Sequence::create(/*Animate::create(AnimationCache::getInstance()->getAnimation("attack"))*/windAttack,
+		auto skill = Sprite::create("01.png");
+		skill->setAnchorPoint(Point(0.4,0.5));
+		skill->setPosition(player1->getPosition());
+		auto skillFadeOut = FadeOut::create(0.5);
+		auto callBackRemove = CallFunc::create([this, &skill]() {
+			this->removeChild(skill);
+		});
+		auto wind = Animation::createWithSpriteFrames(windAnimation, 0.1f);
+		auto action = Animate::create(wind);
+		auto sequence = Sequence::create(
+			action,
+			skillFadeOut,
+			callBackRemove,
 			CCCallFunc::create(([this]() {
 			isAttack1 = false;
 		})), nullptr);
-		player1->runAction(sequence);
-		player1->addChild(wind);
-		wind->runAction(windAttack);
+		addChild(skill);
+		skill->runAction(sequence);
+
+		auto jumpBy1 = JumpBy::create(0.7f,Point(0,50),50,1);
+		auto jumpBy2 = JumpBy::create(0.3f, Point(0, -50), -50, 1);
+		auto sequence1 = Sequence::create(
+			jumpBy1,
+			jumpBy2,
+			nullptr
+		);
+		player1->runAction(sequence1);
 		attackWay1 = 3;
 
 		if (attackWay1 == 1) {
@@ -511,4 +521,15 @@ std::vector<Vec2> HelloWorld::skill3(Vec2 input)
 	skillArea.push_back(Direction4);
 	skillArea.push_back(input);
 	return skillArea;
+}
+
+
+void HelloWorld::windAttack() 
+{
+	char frameName[100] = { 0 };
+	for (int i = 1; i <= 12; i++) {
+		sprintf(frameName, "%02d.png", i);
+		SpriteFrame* pngNameSF = SpriteFrame::create(frameName, Rect(0, 0, 300, 300));
+		windAnimation.pushBack(pngNameSF);
+	}
 }

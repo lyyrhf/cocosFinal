@@ -20,7 +20,7 @@ public:
 		tile1->setColor(inputColor);//改变颜色
 	}
 	void setColor(std::vector<Vec2> inputPosition, Color3B inputColor) {//这个函数按次序改变队列中格子的颜色
-		setColor(inputPosition.at(0), inputColor);
+		//setColor(inputPosition.at(0), inputColor);
 		for (int i = 0; i < inputPosition.size(); i++) {
 			if(isValid(inputPosition.at(i)))//仅当位置合法的时候变色
 				setColor(inputPosition.at(i), inputColor);
@@ -46,6 +46,7 @@ public:
 	}
 	bool isValid(Vec2 position) {//这个函数判断一个格子是否在战斗区域内
 		if (position.x < 2.9 || position.y < 5.9 || position.x>14 || position.y>11) {
+			CCLOG("Refused%f %f", position.x, position.y);
 			return false;
 		}
 		return true;

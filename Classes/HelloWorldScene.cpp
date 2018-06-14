@@ -354,6 +354,7 @@ void HelloWorld::movePlayer1(char c) {
 		CCLOG("Player == %f,%f", player1->getPosition().x, player1->getPosition().y);
 		CCLOG("OpenGL == %f,%f", theMap->tileCoordForPosition(player1->getPosition()).x, theMap->tileCoordForPosition(player1->getPosition()).y);
 		auto test = player1->getPosition();
+		bool NotMove = false;
 		if (c == 'A') {//测试这么走是否会出界
 			test += Vec2(-20, 0);
 		}
@@ -367,7 +368,8 @@ void HelloWorld::movePlayer1(char c) {
 			test += Vec2(0, -20);
 		}
 		if (!theMap->isValid(theMap->tileCoordForPosition(test))) {//如果会出界，则将不执行这个指令
-			return;
+			//return;
+			NotMove = true;
 		}
 
 		if (c == 'A') {
@@ -376,7 +378,7 @@ void HelloWorld::movePlayer1(char c) {
 
 			auto spawn = Spawn::createWithTwoActions(Animate::create(
 				AnimationCache::getInstance()->getAnimation("left")),
-				MoveBy::create(0.01f, Vec2(-10, 0)));
+				MoveBy::create(0.01f, Vec2(NotMove==true?0:-10, 0)));
 			auto sequence = Sequence::create(spawn, CCCallFunc::create(([this]() {
 				
 			})), nullptr);
@@ -388,7 +390,7 @@ void HelloWorld::movePlayer1(char c) {
 			
 			auto spawn = Spawn::createWithTwoActions(Animate::create(
 				AnimationCache::getInstance()->getAnimation("right")),
-				MoveBy::create(0.01f, Vec2(10, 0)));
+				MoveBy::create(0.01f, Vec2(NotMove == true ? 0 : 10, 0)));
 			auto sequence = Sequence::create(spawn, CCCallFunc::create(([this]() {
 
 			})), nullptr);
@@ -399,7 +401,7 @@ void HelloWorld::movePlayer1(char c) {
 
 			auto spawn = Spawn::createWithTwoActions(Animate::create(
 				AnimationCache::getInstance()->getAnimation("up")),
-				MoveBy::create(0.01f, Vec2(0, 10)));
+				MoveBy::create(0.01f, Vec2(0, NotMove == true ? 0 : 10)));
 			auto sequence = Sequence::create(spawn, CCCallFunc::create(([this]() {
 
 			})), nullptr);
@@ -410,7 +412,7 @@ void HelloWorld::movePlayer1(char c) {
 
 			auto spawn = Spawn::createWithTwoActions(Animate::create(
 				AnimationCache::getInstance()->getAnimation("down")),
-				MoveBy::create(0.01f, Vec2(0, -10)));
+				MoveBy::create(0.01f, Vec2(0, NotMove == true ? 0 : -10)));
 			auto sequence = Sequence::create(spawn, CCCallFunc::create(([this]() {
 
 			})), nullptr);

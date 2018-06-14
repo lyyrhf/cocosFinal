@@ -352,7 +352,7 @@ void HelloWorld::movePlayer1(char c) {
 			test += Vec2(0, 20);
 		}
 		else if (c == 'S') {
-			test += Vec2(0, -40);
+			test += Vec2(0, -20);
 		}
 		if (!theMap->isValid(theMap->tileCoordForPosition(test))) {//如果会出界，则将不执行这个指令
 			return;

@@ -168,8 +168,8 @@ void HelloWorld::attack1() {
 		isAttack1 = true;
 		
 		//playWindAttack();
-		//playFireAttack();
-		playDargonAttack();
+		playFireAttack();
+		//playDargonAttack();
 		currentColor3B = theMap->getColor(currentPosition);//更新脚底下的Color
 		attackWay1 = 3;
 
@@ -582,16 +582,17 @@ void HelloWorld::playWindAttack() {
 void HelloWorld::loadFireAttack()
 {
 	char frameName[100] = { 0 };
-	for (int i = 0; i < 8; i++) {
-		sprintf(frameName, "fire%d.png", i);
+	for (int i = 1; i <= 18; i++) {
+		sprintf(frameName, "fire%02d.png", i);
 		SpriteFrame* pngNameSF = SpriteFrame::create(frameName, Rect(0, 0, 300, 300));
 		fireAnimation.pushBack(pngNameSF);
 	}
 }
 
 void HelloWorld::playFireAttack() {
-	auto skill = Sprite::create("fire1.png");
-	skill->setAnchorPoint(Point(0, 0.8));
+	auto skill = Sprite::create("fire01.png");
+	skill->setScale(4);
+	skill->setAnchorPoint(Point(0.1, 0.8));
 	skill->setPosition(player1->getPosition());
 	auto skillFadeOut = FadeOut::create(0.5);
 	auto callBackRemove = CallFunc::create([this, &skill]() {

@@ -77,11 +77,11 @@ private:
 	void loadWindAttack();
 	Vector<SpriteFrame*> windAnimation;
 	void playWindAttack();
-	/*
+	
 	void loadFireAttack();
 	Vector<SpriteFrame*> fireAnimation;
 	void playFireAttack();
-	*/
+	
 	void loadDargonAttack();
 	Vector<SpriteFrame*> dargonAnimation;
 	void playDargonAttack();

@@ -175,7 +175,7 @@ void HelloWorld::attack1() {
 		//playFireAttack(player1);
 		//playDargonAttack(player1);
 		//playDead(player1);
-		currentColor3B = theMap->getColor(currentPosition);//更新脚底下的Color
+		currentColor3B = Color3B(139,0,0);// theMap->getColor(currentPosition);//更新脚底下的Color!!!!!!!!!!!!!!!!!!!!!!!!!!!
 		attackWay1 = 3;
 
 		if (attackWay1 == 1) {

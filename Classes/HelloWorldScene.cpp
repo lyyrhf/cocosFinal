@@ -99,11 +99,11 @@ bool HelloWorld::init()
 	player1->setPosition(Vec2(origin.x + visibleSize.width / 2,
 		origin.y + visibleSize.height / 2));
 	addChild(player1, 3);
-	player1->setAnchorPoint(Point(0.5,0.5));
+	player1->setAnchorPoint(Point(0.5,0.1));
 
 	player2 = Sprite::createWithSpriteFrame(frame[0]);
 	player2->setPosition(Vec2(origin.x + visibleSize.width / 2 + 200,
-		origin.y + visibleSize.height / 2 + 50));
+		origin.y + visibleSize.height / 2 - 150));
 	addChild(player2, 3);
 	player2->setAnchorPoint(Point(0.5, 0.5));
 
@@ -163,7 +163,7 @@ bool HelloWorld::init()
 }
 
 void HelloWorld::attack1() {
-	if (isMove1 == false) {
+	if (isMove1 == false && isAttack1 == false) {
 		theMap = Playground::getInstance();
 		isAttack1 = true;
 		
@@ -186,15 +186,12 @@ void HelloWorld::attack1() {
 }
 
 void HelloWorld::attack2() {
-	if (isMove2 == false) {
+	if (isMove2 == false && isAttack2 == false) {
 		isAttack2 = true;
+		playDargonAttack();
 		theMap = Playground::getInstance();
-		auto sequence = Sequence::create(Animate::create(AnimationCache::getInstance()->getAnimation("attack")),
-			CCCallFunc::create(([this]() {
-			isAttack2 = false;
-		})), nullptr);
-		player2->runAction(sequence);
-		attackWay2 = 3;
+
+		attackWay2 = 1;
 		//theMap->setColor(skill1(theMap->tileCoordForPosition(player->getPosition())),Color3B(139,0,0));
 		if (attackWay2 == 1) {
 			theMap->setColor(skill1(theMap->tileCoordForPosition(player2->getPosition())), Color3B(139, 0, 0));
@@ -373,7 +370,7 @@ void HelloWorld::movePlayer1(char c) {
 
 			auto spawn = Spawn::createWithTwoActions(Animate::create(
 				AnimationCache::getInstance()->getAnimation("left")),
-				MoveBy::create(0.1f, Vec2(-10, 0)));
+				MoveBy::create(0.01f, Vec2(-10, 0)));
 			auto sequence = Sequence::create(spawn, CCCallFunc::create(([this]() {
 				
 			})), nullptr);
@@ -385,7 +382,7 @@ void HelloWorld::movePlayer1(char c) {
 			
 			auto spawn = Spawn::createWithTwoActions(Animate::create(
 				AnimationCache::getInstance()->getAnimation("right")),
-				MoveBy::create(0.1f, Vec2(10, 0)));
+				MoveBy::create(0.01f, Vec2(10, 0)));
 			auto sequence = Sequence::create(spawn, CCCallFunc::create(([this]() {
 
 			})), nullptr);
@@ -396,7 +393,7 @@ void HelloWorld::movePlayer1(char c) {
 
 			auto spawn = Spawn::createWithTwoActions(Animate::create(
 				AnimationCache::getInstance()->getAnimation("up")),
-				MoveBy::create(0.1f, Vec2(0, 10)));
+				MoveBy::create(0.01f, Vec2(0, 10)));
 			auto sequence = Sequence::create(spawn, CCCallFunc::create(([this]() {
 
 			})), nullptr);
@@ -407,7 +404,7 @@ void HelloWorld::movePlayer1(char c) {
 
 			auto spawn = Spawn::createWithTwoActions(Animate::create(
 				AnimationCache::getInstance()->getAnimation("down")),
-				MoveBy::create(0.1f, Vec2(0, -10)));
+				MoveBy::create(0.01f, Vec2(0, -10)));
 			auto sequence = Sequence::create(spawn, CCCallFunc::create(([this]() {
 
 			})), nullptr);

@@ -32,7 +32,10 @@ bool HelloWorld::init()
     {
         return false;
     }
-
+	
+	CocosDenshion::SimpleAudioEngine::getInstance()->playBackgroundMusic("helloWorldSceneBGM.mp3");
+	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("walk.mp3");
+	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("walk.wav");
     visibleSize = Director::getInstance()->getVisibleSize();
     origin = Director::getInstance()->getVisibleOrigin();
 
@@ -144,6 +147,7 @@ bool HelloWorld::init()
 	loadWindAttack();
 	loadFireAttack();
 	loadDargonAttack();
+	loadDead();
 
 	//倒计时
 	time = Label::createWithTTF("180", "fonts/arial.ttf", 36);
@@ -167,9 +171,10 @@ void HelloWorld::attack1() {
 		theMap = Playground::getInstance();
 		isAttack1 = true;
 		
-		//playWindAttack();
-		playFireAttack();
-		//playDargonAttack();
+		playWindAttack(player1);
+		//playFireAttack(player1);
+		//playDargonAttack(player1);
+		//playDead(player1);
 		currentColor3B = theMap->getColor(currentPosition);//更新脚底下的Color
 		attackWay1 = 3;
 
@@ -188,7 +193,7 @@ void HelloWorld::attack1() {
 void HelloWorld::attack2() {
 	if (isMove2 == false && isAttack2 == false) {
 		isAttack2 = true;
-		playDargonAttack();
+		playDargonAttack(player2);
 		theMap = Playground::getInstance();
 
 		attackWay2 = 1;
@@ -206,21 +211,8 @@ void HelloWorld::attack2() {
 }
 
 
-/*
-void HelloWorld::deadCallback(Ref * pSender)
-{
-	if (isDead == false) {
-		isAnimating = true;
-		auto sequence = Sequence::create(Animate::create(AnimationCache::getInstance()->getAnimation("dead")),
-			CCCallFunc::create(([this]() {
-			isAnimating = false;
-			isDead = true;
-		})), nullptr);
-		player1->runAction(sequence);
-		unschedule(schedule_selector(HelloWorld::update));
-	}
-}
-*/
+
+
 
 /*
 update实现倒计时的功能，其中开始的值是180
@@ -344,6 +336,8 @@ void HelloWorld::addKeyboardListener() {
 //0是上，1是下，2是左，3是右
 void HelloWorld::movePlayer1(char c) {
 	if (isAttack1 == false) {
+		CCLOG("%s","musci");
+		CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("walk.wav");
 		theMap = Playground::getInstance();
 		CCLOG("Player == %f,%f", player1->getPosition().x, player1->getPosition().y);
 		CCLOG("OpenGL == %f,%f", theMap->tileCoordForPosition(player1->getPosition()).x, theMap->tileCoordForPosition(player1->getPosition()).y);
@@ -539,6 +533,7 @@ std::vector<Vec2> HelloWorld::skill3(Vec2 input)
 
 void HelloWorld::loadWindAttack() 
 {
+	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("wind.mp3");
 	char frameName[100] = { 0 };
 	for (int i = 1; i <= 12; i++) {
 		sprintf(frameName, "%02d.png", i);
@@ -547,10 +542,11 @@ void HelloWorld::loadWindAttack()
 	}
 }
 
-void HelloWorld::playWindAttack() {
+void HelloWorld::playWindAttack(cocos2d::Sprite* player) {
+	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("wind.mp3");
 	auto skill = Sprite::create("01.png");
 	skill->setAnchorPoint(Point(0.4, 0.5));
-	skill->setPosition(player1->getPosition());
+	skill->setPosition(player->getPosition());
 	auto skillFadeOut = FadeOut::create(0.5);
 	auto callBackRemove = CallFunc::create([this, &skill]() {
 		this->removeChild(skill);
@@ -578,6 +574,7 @@ void HelloWorld::playWindAttack() {
 
 void HelloWorld::loadFireAttack()
 {
+	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("fire.mp3");
 	char frameName[100] = { 0 };
 	for (int i = 1; i <= 18; i++) {
 		sprintf(frameName, "fire%02d.png", i);
@@ -586,11 +583,12 @@ void HelloWorld::loadFireAttack()
 	}
 }
 
-void HelloWorld::playFireAttack() {
+void HelloWorld::playFireAttack(cocos2d::Sprite* player) {
+	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("fire.mp3");
 	auto skill = Sprite::create("fire01.png");
 	skill->setScale(4);
 	skill->setAnchorPoint(Point(0.1, 0.8));
-	skill->setPosition(player1->getPosition());
+	skill->setPosition(player->getPosition());
 	auto skillFadeOut = FadeOut::create(0.5);
 	auto callBackRemove = CallFunc::create([this, &skill]() {
 		this->removeChild(skill);
@@ -610,6 +608,7 @@ void HelloWorld::playFireAttack() {
 
 void HelloWorld::loadDargonAttack()
 {
+	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("dargon.mp3");
 	char frameName[100] = { 0 };
 	for (int i = 1; i <= 19; i++) {
 		sprintf(frameName, "dargon%02d.png", i);
@@ -618,10 +617,11 @@ void HelloWorld::loadDargonAttack()
 	}
 }
 
-void HelloWorld::playDargonAttack() {
+void HelloWorld::playDargonAttack(cocos2d::Sprite* player) {
+	CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("dargon.mp3");
 	auto skill = Sprite::create("dargon01.png");
 	skill->setAnchorPoint(Point(0.2, 0.2));
-	skill->setPosition(player1->getPosition());
+	skill->setPosition(player->getPosition());
 	auto skillFadeOut = FadeOut::create(0.5);
 	auto callBackRemove = CallFunc::create([this, &skill]() {
 		this->removeChild(skill);
@@ -637,4 +637,34 @@ void HelloWorld::playDargonAttack() {
 	})), nullptr);
 	addChild(skill);
 	skill->runAction(sequence);
+}
+
+
+void HelloWorld::loadDead() {
+	char frameName[100] = { 0 };
+	for (int i = 1; i <= 5; i++) {
+		sprintf(frameName, "dead%02d.png", i);
+		SpriteFrame* pngNameSF = SpriteFrame::create(frameName, Rect(0, 0, 300, 300));
+		deadAnimation.pushBack(pngNameSF);
+	}
+}
+
+void HelloWorld::playDead(cocos2d::Sprite* player) 
+{
+	auto skillFadeOut = FadeOut::create(0.5);
+	auto callBackRemove = CallFunc::create([this, &player]() {
+		this->removeChild(player);
+	});
+	auto dead = Animation::createWithSpriteFrames(deadAnimation, 0.1f);
+	auto action = Animate::create(dead);
+	auto sequence = Sequence::create(
+		action,
+		skillFadeOut,
+		callBackRemove,
+		CCCallFunc::create(([this]() {
+		isAttack1 = false;
+	})), nullptr);
+	//addChild(skill);
+	player->runAction(sequence);
+	_eventDispatcher->removeAllEventListeners();
 }

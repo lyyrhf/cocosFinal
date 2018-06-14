@@ -26,6 +26,8 @@ bool MenuScene::init()
 		return false;
 	}
 
+	CocosDenshion::SimpleAudioEngine::getInstance()->playBackgroundMusic("menuSceneBGM.mp3");
+
 	auto visibleSize = Director::getInstance()->getVisibleSize();
 	Vec2 origin = Director::getInstance()->getVisibleOrigin();
 

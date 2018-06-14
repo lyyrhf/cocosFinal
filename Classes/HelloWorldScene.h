@@ -1,5 +1,6 @@
 #include "cocos2d.h"
-#include"MapController.h"
+#include "MapController.h"
+#include "SimpleAudioEngine.h"
 using namespace cocos2d;
 
 class HelloWorld : public cocos2d::Scene
@@ -76,13 +77,17 @@ private:
 
 	void loadWindAttack();
 	Vector<SpriteFrame*> windAnimation;
-	void playWindAttack();
+	void playWindAttack(cocos2d::Sprite* player);//表示技能是谁发出的，显示在相应的人物身边
 	
 	void loadFireAttack();
 	Vector<SpriteFrame*> fireAnimation;
-	void playFireAttack();
+	void playFireAttack(cocos2d::Sprite* player);
 	
 	void loadDargonAttack();
 	Vector<SpriteFrame*> dargonAnimation;
-	void playDargonAttack();
+	void playDargonAttack(cocos2d::Sprite* player);
+
+	void loadDead();
+	void playDead(cocos2d::Sprite* player);
+	Vector<SpriteFrame*> deadAnimation;
 };

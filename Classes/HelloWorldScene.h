@@ -39,9 +39,9 @@ private:
 	//判断是否在攻击
 	//bool isAttack = false;
 	//判断是否在死亡
-	bool isDead = false;
+	//bool isDead = false;
 	//停止所有动作
-	void stop(float time);
+	//void stop(float time);
 
 
 	void addKeyboardListener();
@@ -90,4 +90,7 @@ private:
 	void loadDead();
 	void playDead(cocos2d::Sprite* player);
 	Vector<SpriteFrame*> deadAnimation;
+
+	bool isPlayer1Dead;
+	int player1Blood;//只要改变这个值就可以改变血条了
 };

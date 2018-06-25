@@ -228,6 +228,8 @@ https://www.cnblogs.com/leehongee/p/3642308.html
 
 void HelloWorld::update(float dt)
 {
+	
+
 	for (int i = 1; i <= player1Blood; i++) {
 		auto blood = Sprite::create("blood.png");
 		blood->setPosition(origin.x + 50*i, origin.y + visibleSize.height * 9 / 10);

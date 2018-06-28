@@ -6,8 +6,9 @@ using namespace cocos2d;
 class HelloWorld : public cocos2d::Scene
 {
 public:
+	static PhysicsWorld* world;
     static cocos2d::Scene* createScene();
-
+	void setPhysicsWorld(PhysicsWorld * world);
     virtual bool init();
         
     // implement the "static create()" method manually
@@ -93,4 +94,8 @@ private:
 
 	bool isPlayer1Dead;
 	int player1Blood;//只要改变这个值就可以改变血条了
+
+	PhysicsWorld* m_world;
+
+	enum Tag { PLAYER1, PLAYER2 };
 };

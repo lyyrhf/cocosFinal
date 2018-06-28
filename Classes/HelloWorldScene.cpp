@@ -1,19 +1,31 @@
 #include "HelloWorldScene.h"
 #include "SimpleAudioEngine.h"
 #include "MapController.h"
-
+#include "cocos2d.h"
 //宏定义用于本地数据持久化
 #define database UserDefault::getInstance()
-
-//因为string要用，或者std::string也行
-using namespace std;
 #pragma execution_character_set("utf-8")
 
 USING_NS_CC;
+using namespace CocosDenshion;
+
+void HelloWorld::setPhysicsWorld(PhysicsWorld* world) {
+	m_world = world;
+}
+
 
 Scene* HelloWorld::createScene()
 {
-    return HelloWorld::create();
+	auto scene = Scene::createWithPhysics();
+
+	scene->getPhysicsWorld()->setAutoStep(true);
+
+	scene->getPhysicsWorld()->setGravity(Vec2(0, -300.0f));
+	auto layer = HelloWorld::create();
+	layer->setPhysicsWorld(scene->getPhysicsWorld());
+	scene->addChild(layer);
+	return scene;
+    //return HelloWorld::create();
 }
 
 // Print useful error message instead of segfaulting when files are not there.
@@ -32,12 +44,21 @@ bool HelloWorld::init()
     {
         return false;
     }
-	
+	visibleSize = Director::getInstance()->getVisibleSize();
+	origin = Director::getInstance()->getVisibleOrigin();
+
+	CCLOG("visibleSize.width = %f",visibleSize.width);
+
+	auto edgeSp = Sprite::create();  //创建一个精灵
+	cocos2d::Size boundSize = Size(visibleSize.width - 200, visibleSize.height - 200);
+	auto boundBody = PhysicsBody::createEdgeBox(boundSize, PhysicsMaterial(0.0f, 0.0f, 0.0f), 3);  //edgebox是不受刚体碰撞影响的一种刚体，我们用它来设置物理世界的边界
+	edgeSp->setPosition(visibleSize.width / 2, visibleSize.height / 2 - 80);  //位置设置在屏幕中央
+	edgeSp->setPhysicsBody(boundBody);
+	addChild(edgeSp);
+
 	CocosDenshion::SimpleAudioEngine::getInstance()->playBackgroundMusic("helloWorldSceneBGM.mp3");
 	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("walk.mp3");
 	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("walk.wav");
-    visibleSize = Director::getInstance()->getVisibleSize();
-    origin = Director::getInstance()->getVisibleOrigin();
 
 
 	auto theMap =Playground::getInstance();
@@ -101,16 +122,37 @@ bool HelloWorld::init()
 
 	//使用第一帧创建精灵
 	player1 = Sprite::createWithSpriteFrame(frame[0]);
+
+	auto playerBody1 = PhysicsBody::createBox(player1->getContentSize(), PhysicsMaterial(1.0f, 0.0f, 0.0f));
+	playerBody1->setCategoryBitmask(0xFFFFFFFF);
+	playerBody1->setCollisionBitmask(0xFFFFFFFF);
+	playerBody1->setContactTestBitmask(0xFFFFFFFF);
+	playerBody1->setGravityEnable(false);
+	playerBody1->setTag(Tag::PLAYER1);
+	player1->setPhysicsBody(playerBody1);
+	player1->getPhysicsBody()->setRotationEnable(false);
+
 	player1->setPosition(Vec2(origin.x + visibleSize.width / 2,
 		origin.y + visibleSize.height / 2));
 	addChild(player1, 3);
 	player1->setAnchorPoint(Point(0.5,0.1));
 
+
+
 	player2 = Sprite::createWithSpriteFrame(frame[0]);
+	auto playerBody2 = PhysicsBody::createBox(player2->getContentSize(), PhysicsMaterial(1.0f, 0.0f, 0.0f));
+	playerBody2->setCategoryBitmask(0xFFFFFFFF);
+	playerBody2->setCollisionBitmask(0xFFFFFFFF);
+	playerBody2->setContactTestBitmask(0xFFFFFFFF);
+	playerBody2->setGravityEnable(false);
+	playerBody2->setTag(Tag::PLAYER2);
+	player2->setPhysicsBody(playerBody2);
+	player2->getPhysicsBody()->setRotationEnable(false);
+
 	player2->setPosition(Vec2(origin.x + visibleSize.width / 2 + 200,
 		origin.y + visibleSize.height / 2 - 150));
 	addChild(player2, 3);
-	player2->setAnchorPoint(Point(0.5, 0.5));
+	player2->setAnchorPoint(Point(0.5, 0.1));
 
 	// 静态动画
 	idle.reserve(1);
@@ -196,9 +238,9 @@ void HelloWorld::attack1() {
 void HelloWorld::attack2() {
 	if (isMove2 == false && isAttack2 == false) {
 		isAttack2 = true;
-		playDargonAttack(player2);
 		theMap = Playground::getInstance();
 
+		playDargonAttack(player2);
 		attackWay2 = 1;
 		//theMap->setColor(skill1(theMap->tileCoordForPosition(player->getPosition())),Color3B(139,0,0));
 		if (attackWay2 == 1) {
@@ -237,12 +279,12 @@ void HelloWorld::update(float dt)
 		addChild(blood, 1);
 	}
 
-	string str = time->getString();
+	std::string str = time->getString();
 	int timeLength = atoi(str.c_str());
 	if (timeLength > 0) {
 		timeLength--;
 		CCString* ns = CCString::createWithFormat("%d", timeLength);
-		string s = ns->_string;
+		std::string s = ns->_string;
 		time->setString(s);
 	}
 	else {
@@ -276,37 +318,45 @@ void HelloWorld::onKeyPressed(EventKeyboard::KeyCode code, Event* event) {
 	case EventKeyboard::KeyCode::KEY_A:
 		movekey1 = 'A';
 		isMove1 = true;
+		player1->getPhysicsBody()->setVelocity(Vec2(-500, 0));
 		break;
 	case EventKeyboard::KeyCode::KEY_CAPITAL_D:
 	case EventKeyboard::KeyCode::KEY_D:
 		movekey1 = 'D';
 		isMove1 = true;
+		player1->getPhysicsBody()->setVelocity(Vec2(500, 0));
 		break;
 	case EventKeyboard::KeyCode::KEY_CAPITAL_S:
 	case EventKeyboard::KeyCode::KEY_S:
 		movekey1 = 'S';
 		isMove1 = true;
+		player1->getPhysicsBody()->setVelocity(Vec2(0, -500));
 		break;
 	case EventKeyboard::KeyCode::KEY_CAPITAL_W:
 	case EventKeyboard::KeyCode::KEY_W:
 		movekey1 = 'W';
 		isMove1 = true;
+		player1->getPhysicsBody()->setVelocity(Vec2(0, 500));
 		break;
 	case EventKeyboard::KeyCode::KEY_LEFT_ARROW:
 		movekey2 = 'A';
 		isMove2 = true;
+		player2->getPhysicsBody()->setVelocity(Vec2(-500, 0));
 		break;
 	case EventKeyboard::KeyCode::KEY_RIGHT_ARROW:
 		movekey2 = 'D';
 		isMove2 = true;
+		player2->getPhysicsBody()->setVelocity(Vec2(500, 0));
 		break;
 	case EventKeyboard::KeyCode::KEY_DOWN_ARROW:
 		movekey2 = 'S';
 		isMove2 = true;
+		player2->getPhysicsBody()->setVelocity(Vec2(0, -500));
 		break;
 	case EventKeyboard::KeyCode::KEY_UP_ARROW:
 		movekey2 = 'W';
 		isMove2 = true;
+		player2->getPhysicsBody()->setVelocity(Vec2(0, 500));
 		break;
 	case EventKeyboard::KeyCode::KEY_SPACE:
 		attack1();
@@ -328,6 +378,7 @@ void HelloWorld::onKeyReleased(EventKeyboard::KeyCode code, Event* event) {
 	case EventKeyboard::KeyCode::KEY_W:
 	case EventKeyboard::KeyCode::KEY_CAPITAL_W:
 		isMove1 = false;
+		player1->getPhysicsBody()->setVelocity(Vec2(0, 0));
 		break;
 
 	case EventKeyboard::KeyCode::KEY_LEFT_ARROW:
@@ -335,6 +386,7 @@ void HelloWorld::onKeyReleased(EventKeyboard::KeyCode code, Event* event) {
 	case EventKeyboard::KeyCode::KEY_UP_ARROW:
 	case EventKeyboard::KeyCode::KEY_DOWN_ARROW:
 		isMove2 = false;
+		player2->getPhysicsBody()->setVelocity(Vec2(0, 0));
 		break;
 	}
 }
@@ -350,75 +402,34 @@ void HelloWorld::addKeyboardListener() {
 //0是上，1是下，2是左，3是右
 void HelloWorld::movePlayer1(char c) {
 	if (isAttack1 == false) {
-		CCLOG("%s","musci");
 		CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("walk.wav");
 		theMap = Playground::getInstance();
 		CCLOG("Player == %f,%f", player1->getPosition().x, player1->getPosition().y);
 		CCLOG("OpenGL == %f,%f", theMap->tileCoordForPosition(player1->getPosition()).x, theMap->tileCoordForPosition(player1->getPosition()).y);
-		auto test = player1->getPosition();
-		bool NotMove = false;
-		if (c == 'A') {//测试这么走是否会出界
-			test += Vec2(-20, 0);
-		}
-		else if (c == 'D') {
-			test += Vec2(20, 0); 
-		}
-		else if (c == 'W') {
-			test += Vec2(0, 20);
-		}
-		else if (c == 'S') {
-			test += Vec2(0, -20);
-		}
-		if (!theMap->isValid(theMap->tileCoordForPosition(test))) {//如果会出界，则将不执行这个指令
-			//return;
-			NotMove = true;
-		}
 
 		if (c == 'A') {
 			player1Direction = 2;
 
-
-			auto spawn = Spawn::createWithTwoActions(Animate::create(
-				AnimationCache::getInstance()->getAnimation("left")),
-				MoveBy::create(0.01f, Vec2(NotMove==true?0:-10, 0)));
-			auto sequence = Sequence::create(spawn, CCCallFunc::create(([this]() {
-				
-			})), nullptr);
-			player1->runAction(sequence);
+			auto left = Animate::create(AnimationCache::getInstance()->getAnimation("left"));
+			player1->runAction(left);
 		}
 		else if (c == 'D') {
 			player1Direction = 3;
 
-			
-			auto spawn = Spawn::createWithTwoActions(Animate::create(
-				AnimationCache::getInstance()->getAnimation("right")),
-				MoveBy::create(0.01f, Vec2(NotMove == true ? 0 : 10, 0)));
-			auto sequence = Sequence::create(spawn, CCCallFunc::create(([this]() {
-
-			})), nullptr);
-			player1->runAction(sequence);
+			auto right = Animate::create(AnimationCache::getInstance()->getAnimation("right"));
+			player1->runAction(right);
 		}
 		else if (c == 'W') {
 			player1Direction = 0;
 
-			auto spawn = Spawn::createWithTwoActions(Animate::create(
-				AnimationCache::getInstance()->getAnimation("up")),
-				MoveBy::create(0.01f, Vec2(0, NotMove == true ? 0 : 10)));
-			auto sequence = Sequence::create(spawn, CCCallFunc::create(([this]() {
-
-			})), nullptr);
-			player1->runAction(sequence);
+			auto up = Animate::create(AnimationCache::getInstance()->getAnimation("up"));
+			player1->runAction(up);
 		}
 		else if (c == 'S') {
 			player1Direction = 1;
 
-			auto spawn = Spawn::createWithTwoActions(Animate::create(
-				AnimationCache::getInstance()->getAnimation("down")),
-				MoveBy::create(0.01f, Vec2(0, NotMove == true ? 0 : -10)));
-			auto sequence = Sequence::create(spawn, CCCallFunc::create(([this]() {
-
-			})), nullptr);
-			player1->runAction(sequence);
+			auto down = Animate::create(AnimationCache::getInstance()->getAnimation("down"));
+			player1->runAction(down);
 		}
 	}
 	if (!currentPosition.equals(theMap->tileCoordForPosition(player1->getPosition()))){//当格子变动时
@@ -430,35 +441,46 @@ void HelloWorld::movePlayer1(char c) {
 	}
 
 }
-
 void HelloWorld::movePlayer2(char c) {
 	if (isAttack2 == false) {
+		CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("walk.wav");
 		theMap = Playground::getInstance();
-		CCLOG("Player == %f,%f", player1->getPosition().x, player1->getPosition().y);
-		CCLOG("OpenGL == %f,%f", theMap->tileCoordForPosition(player1->getPosition()).x, theMap->tileCoordForPosition(player1->getPosition()).y + 2);
+		CCLOG("Player == %f,%f", player2->getPosition().x, player2->getPosition().y);
+		CCLOG("OpenGL == %f,%f", theMap->tileCoordForPosition(player2->getPosition()).x, theMap->tileCoordForPosition(player2->getPosition()).y);
+
 		if (c == 'A') {
-			player2->setFlippedX(true);
-			if (player2->getPosition().x > 0) {
-				player2->runAction(MoveBy::create(0.1f, Vec2(-10, 0)));
-			}
+			player2Direction = 2;
+
+			auto left = Animate::create(AnimationCache::getInstance()->getAnimation("left"));
+			player2->runAction(left);
 		}
 		else if (c == 'D') {
-			player2->setFlippedX(false);
-			if (player2->getPosition().x < visibleSize.width) {
-				player2->runAction(MoveBy::create(0.1f, Vec2(10, 0)));
-			}
+			player2Direction = 3;
+
+			auto right = Animate::create(AnimationCache::getInstance()->getAnimation("right"));
+			player2->runAction(right);
 		}
 		else if (c == 'W') {
-			if (player2->getPosition().y < visibleSize.height) {
-				player2->runAction(MoveBy::create(0.1f, Vec2(0, 10)));
-			}
+			player2Direction = 0;
+
+			auto up = Animate::create(AnimationCache::getInstance()->getAnimation("up"));
+			player2->runAction(up);
 		}
 		else if (c == 'S') {
-			if (player2->getPosition().y > 0) {
-				player2->runAction(MoveBy::create(0.1f, Vec2(0, -10)));
-			}
+			player2Direction = 1;
+
+			auto down = Animate::create(AnimationCache::getInstance()->getAnimation("down"));
+			player2->runAction(down);
 		}
 	}
+	if (!currentPosition.equals(theMap->tileCoordForPosition(player2->getPosition()))) {//当格子变动时
+		CCLOG("tileChange %f %f", theMap->tileCoordForPosition(player2->getPosition()).x, theMap->tileCoordForPosition(player2->getPosition()).y);
+		theMap->setColor(currentPosition, currentColor3B);//上一个格子恢复先前颜色
+		currentPosition = theMap->tileCoordForPosition(player2->getPosition());//获得新的当前地址
+		currentColor3B = theMap->getColor(currentPosition);//保存当前位置的颜色
+		theMap->setColor(currentPosition, Color3B(100, 100, 100));//当前位置变成灰色
+	}
+
 }
 
 std::vector<Vec2> HelloWorld::skill1(Vec2 input)//十字形攻击

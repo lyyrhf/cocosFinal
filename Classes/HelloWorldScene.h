@@ -94,6 +94,14 @@ private:
 
 	bool isPlayer1Dead;
 	int player1Blood;//只要改变这个值就可以改变血条了
+	std::stack<Sprite*> player1BloodStack;
+	void reducePlayer1Blood();
+
+
+	bool isPlayer2Dead;
+	int player2Blood;
+	std::stack<Sprite*> player2BloodStack;
+	void reducePlayer2Blood();
 
 	PhysicsWorld* m_world;
 

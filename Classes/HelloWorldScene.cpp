@@ -119,6 +119,24 @@ bool HelloWorld::init()
 
 
 	player1Blood = 3;//设置初始血条
+	player2Blood = 3;
+
+
+	for (int i = 1; i <= player1Blood; i++) {
+		auto blood = Sprite::create("blood.png");
+		blood->setPosition(origin.x + 50 * i, origin.y + visibleSize.height * 9 / 10);
+		blood->setScale(0.2);
+		player1BloodStack.push(blood);
+		addChild(blood, 1);
+	}
+
+	for (int i = 1; i <= player2Blood; i++) {
+		auto blood = Sprite::create("blood.png");
+		blood->setPosition(visibleSize.width - 50 * i, origin.y + visibleSize.height * 9 / 10);
+		blood->setScale(0.2);
+		player2BloodStack.push(blood);
+		addChild(blood, 1);
+	}
 
 	//使用第一帧创建精灵
 	player1 = Sprite::createWithSpriteFrame(frame[0]);
@@ -216,6 +234,7 @@ void HelloWorld::attack1() {
 		theMap = Playground::getInstance();
 		isAttack1 = true;
 		
+		reducePlayer1Blood();
 		playWindAttack(player1);
 		//playFireAttack(player1);
 		//playDargonAttack(player1);
@@ -239,7 +258,7 @@ void HelloWorld::attack2() {
 	if (isMove2 == false && isAttack2 == false) {
 		isAttack2 = true;
 		theMap = Playground::getInstance();
-
+		reducePlayer2Blood();
 		playDargonAttack(player2);
 		attackWay2 = 1;
 		//theMap->setColor(skill1(theMap->tileCoordForPosition(player->getPosition())),Color3B(139,0,0));
@@ -270,15 +289,21 @@ https://www.cnblogs.com/leehongee/p/3642308.html
 
 void HelloWorld::update(float dt)
 {
-	
-
+	/*
 	for (int i = 1; i <= player1Blood; i++) {
 		auto blood = Sprite::create("blood.png");
-		blood->setPosition(origin.x + 50*i, origin.y + visibleSize.height * 9 / 10);
+		blood->setPosition(origin.x + 50 * i, origin.y + visibleSize.height * 9 / 10);
 		blood->setScale(0.2);
 		addChild(blood, 1);
 	}
 
+	for (int i = 1; i <= player2Blood; i++) {
+		auto blood = Sprite::create("blood.png");
+		blood->setPosition(visibleSize.width - 50 * i, origin.y + visibleSize.height * 9 / 10);
+		blood->setScale(0.2);
+		addChild(blood, 1);
+	}
+	*/
 	std::string str = time->getString();
 	int timeLength = atoi(str.c_str());
 	if (timeLength > 0) {
@@ -291,6 +316,7 @@ void HelloWorld::update(float dt)
 		unschedule(schedule_selector(HelloWorld::update));
 	}
 }
+
 void HelloWorld::updateMove(float dt) {
 	if (isMove1) {
 		movePlayer1(movekey1);
@@ -318,45 +344,61 @@ void HelloWorld::onKeyPressed(EventKeyboard::KeyCode code, Event* event) {
 	case EventKeyboard::KeyCode::KEY_A:
 		movekey1 = 'A';
 		isMove1 = true;
-		player1->getPhysicsBody()->setVelocity(Vec2(-500, 0));
+		if (isAttack1 == false) {
+			player1->getPhysicsBody()->setVelocity(Vec2(-500, 0));
+		}
 		break;
 	case EventKeyboard::KeyCode::KEY_CAPITAL_D:
 	case EventKeyboard::KeyCode::KEY_D:
 		movekey1 = 'D';
 		isMove1 = true;
-		player1->getPhysicsBody()->setVelocity(Vec2(500, 0));
+		if (isAttack1 == false) {
+			player1->getPhysicsBody()->setVelocity(Vec2(500, 0));
+		}
 		break;
 	case EventKeyboard::KeyCode::KEY_CAPITAL_S:
 	case EventKeyboard::KeyCode::KEY_S:
 		movekey1 = 'S';
 		isMove1 = true;
-		player1->getPhysicsBody()->setVelocity(Vec2(0, -500));
+		if (isAttack1 == false) {
+			player1->getPhysicsBody()->setVelocity(Vec2(0, -500));
+		}
 		break;
 	case EventKeyboard::KeyCode::KEY_CAPITAL_W:
 	case EventKeyboard::KeyCode::KEY_W:
 		movekey1 = 'W';
 		isMove1 = true;
-		player1->getPhysicsBody()->setVelocity(Vec2(0, 500));
+		if (isAttack1 == false) {
+			player1->getPhysicsBody()->setVelocity(Vec2(0, 500));
+		}
 		break;
 	case EventKeyboard::KeyCode::KEY_LEFT_ARROW:
 		movekey2 = 'A';
 		isMove2 = true;
-		player2->getPhysicsBody()->setVelocity(Vec2(-500, 0));
+		if (isAttack2 == false) {
+			player2->getPhysicsBody()->setVelocity(Vec2(-500, 0));
+		}
 		break;
 	case EventKeyboard::KeyCode::KEY_RIGHT_ARROW:
 		movekey2 = 'D';
 		isMove2 = true;
-		player2->getPhysicsBody()->setVelocity(Vec2(500, 0));
+		if (isAttack2 == false) {
+			player2->getPhysicsBody()->setVelocity(Vec2(500, 0));
+		}
 		break;
 	case EventKeyboard::KeyCode::KEY_DOWN_ARROW:
 		movekey2 = 'S';
 		isMove2 = true;
-		player2->getPhysicsBody()->setVelocity(Vec2(0, -500));
+		if (isAttack2 == false) {
+			player2->getPhysicsBody()->setVelocity(Vec2(0, -500));
+		}
 		break;
 	case EventKeyboard::KeyCode::KEY_UP_ARROW:
 		movekey2 = 'W';
 		isMove2 = true;
-		player2->getPhysicsBody()->setVelocity(Vec2(0, 500));
+		if (isAttack2 == false) {
+			player2->getPhysicsBody()->setVelocity(Vec2(0, 500));
+		}
 		break;
 	case EventKeyboard::KeyCode::KEY_SPACE:
 		attack1();
@@ -598,6 +640,7 @@ void HelloWorld::playWindAttack(cocos2d::Sprite* player) {
 		callBackRemove,
 		CCCallFunc::create(([this]() {
 		isAttack1 = false;
+		isAttack2 = false;
 	})), nullptr);
 	addChild(skill);
 	skill->runAction(sequence);
@@ -640,6 +683,7 @@ void HelloWorld::playFireAttack(cocos2d::Sprite* player) {
 		callBackRemove,
 		CCCallFunc::create(([this]() {
 		isAttack1 = false;
+		isAttack2 = false;
 	})), nullptr);
 	addChild(skill);
 	skill->runAction(sequence);
@@ -673,6 +717,7 @@ void HelloWorld::playDargonAttack(cocos2d::Sprite* player) {
 		callBackRemove,
 		CCCallFunc::create(([this]() {
 		isAttack1 = false;
+		isAttack2 = false;
 	})), nullptr);
 	addChild(skill);
 	skill->runAction(sequence);
@@ -704,9 +749,30 @@ void HelloWorld::playDead(cocos2d::Sprite* player)
 		callBackRemove,
 		CCCallFunc::create(([this]() {
 		isAttack1 = false;
+		isAttack2 = false;
 	})), nullptr);
 	//addChild(skill);
 	player->runAction(sequence);
 	_eventDispatcher->removeAllEventListeners();
 	CocosDenshion::SimpleAudioEngine::getInstance()->stopBackgroundMusic();
+}
+
+void HelloWorld::reducePlayer1Blood()
+{
+	if (player1BloodStack.empty()) {
+		return;
+	}
+	auto temp = player1BloodStack.top();
+	temp->removeFromParentAndCleanup(true);
+	player1BloodStack.pop();
+}
+
+void HelloWorld::reducePlayer2Blood() 
+{
+	if (player2BloodStack.empty()) {
+		return;
+	}
+	auto temp = player2BloodStack.top();
+	temp->removeFromParentAndCleanup(true);
+	player2BloodStack.pop();
 }

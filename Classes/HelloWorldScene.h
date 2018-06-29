@@ -109,4 +109,6 @@ private:
 	bool beingAttackedB=false;
 	void beingAttacked(Sprite* attacker, Sprite* beingAttacker);
 	enum Tag { PLAYER1, PLAYER2 };
+
+	bool onConcactBegin(PhysicsContact & contact);
 };

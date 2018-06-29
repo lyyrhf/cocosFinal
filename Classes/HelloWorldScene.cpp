@@ -50,9 +50,9 @@ bool HelloWorld::init()
 	CCLOG("visibleSize.width = %f",visibleSize.width);
 
 	auto edgeSp = Sprite::create();  //创建一个精灵
-	cocos2d::Size boundSize = Size(visibleSize.width - 200, visibleSize.height - 200);
-	auto boundBody = PhysicsBody::createEdgeBox(boundSize, PhysicsMaterial(0.0f, 0.0f, 0.0f), 10);  //edgebox是不受刚体碰撞影响的一种刚体，我们用它来设置物理世界的边界
-	edgeSp->setPosition(visibleSize.width / 2, visibleSize.height / 2 - 80);  //位置设置在屏幕中央
+	cocos2d::Size boundSize = Size(visibleSize.width - 160, visibleSize.height - 150);
+	auto boundBody = PhysicsBody::createEdgeBox(boundSize, PhysicsMaterial(0.0f, 0.0f, 0.0f), 50);  //edgebox是不受刚体碰撞影响的一种刚体，我们用它来设置物理世界的边界
+	edgeSp->setPosition(visibleSize.width / 2, visibleSize.height / 2 - 100);  //位置设置在屏幕中央
 	edgeSp->setPhysicsBody(boundBody);
 	addChild(edgeSp);
 
@@ -147,6 +147,7 @@ bool HelloWorld::init()
 	playerBody1->setContactTestBitmask(0xFFFFFFFF);
 	playerBody1->setGravityEnable(false);
 	playerBody1->setTag(Tag::PLAYER1);
+	//playerBody1->setDynamic(false);
 	player1->setPhysicsBody(playerBody1);
 	player1->getPhysicsBody()->setRotationEnable(false);
 
@@ -162,6 +163,7 @@ bool HelloWorld::init()
 	playerBody2->setContactTestBitmask(0xFFFFFFFF);
 	playerBody2->setGravityEnable(false);
 	playerBody2->setTag(Tag::PLAYER2);
+	//playerBody2->setDynamic(false);
 	player2->setPhysicsBody(playerBody2);
 	player2->getPhysicsBody()->setRotationEnable(false);
 
@@ -224,6 +226,12 @@ bool HelloWorld::init()
 	//每一秒时间减少一
 	schedule(schedule_selector(HelloWorld::update), 1.0f);
 //	schedule(schedule_selector(HelloWorld::stop), 0.1f);
+
+
+	auto contactListener = EventListenerPhysicsContact::create();
+	contactListener->onContactBegin = CC_CALLBACK_1(HelloWorld::onConcactBegin, this);
+	_eventDispatcher->addEventListenerWithSceneGraphPriority(contactListener, this);
+
     return true;
 }
 
@@ -816,4 +824,16 @@ void HelloWorld::reducePlayer2Blood()
 	auto temp = player2BloodStack.top();
 	temp->removeFromParentAndCleanup(true);
 	player2BloodStack.pop();
+}
+
+bool HelloWorld::onConcactBegin(PhysicsContact & contact) {
+	CCLOG("yes");
+	auto c1 = contact.getShapeA()->getBody(), c2 = contact.getShapeB()->getBody();
+	auto s1 = (Sprite*)c1->getNode(), s2 = (Sprite*)c2->getNode();
+	
+	if (c1->getTag() == Tag::PLAYER1 && c2->getTag() == Tag::PLAYER2) {
+		s1->getPhysicsBody()->setVelocity(Vec2(0, 0));
+		s2->getPhysicsBody()->setVelocity(Vec2(0, 0));
+	}
+	return true;
 }

@@ -19,12 +19,18 @@ public:
 		auto tile1 = backGroundLayer->getTileAt(Point(inputPosition.x, inputPosition.y));//获取指定格子
 		tile1->setColor(inputColor);//改变颜色
 	}
-	void setColor(std::vector<Vec2> inputPosition, Color3B inputColor) {//这个函数按次序改变队列中格子的颜色
+	bool setColor(Vec2 otherPlayerPosition,std::vector<Vec2> inputPosition, Color3B inputColor) {//这个函数按次序改变队列中格子的颜色,并且根据是否能攻击到返回truefalse
 		//setColor(inputPosition.at(0), inputColor);
+		bool temp = false;
 		for (int i = 0; i < inputPosition.size(); i++) {
-			if(isValid(inputPosition.at(i)))//仅当位置合法的时候变色
+			if (isValid(inputPosition.at(i))) {//仅当位置合法的时候变色
 				setColor(inputPosition.at(i), inputColor);
+				if (inputPosition.at(i) == tileCoordForPosition(otherPlayerPosition)) {
+					temp = true;
+				}
+			}
 		}
+		return temp;//查看敌人是否被攻击到了
 	}
 	Color3B getColor(Vec2 inputPosition) {//获取一个格子的颜色
 		auto tile1 = backGroundLayer->getTileAt(Point(inputPosition.x, inputPosition.y));//获取指定格子

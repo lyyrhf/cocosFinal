@@ -229,7 +229,7 @@ bool HelloWorld::init()
     return true;
 }
 
-void HelloWorld::attack1() {
+void HelloWorld::attack1() {//player1的攻击
 	if (isMove1 == false && isAttack1 == false) {
 		theMap = Playground::getInstance();
 		isAttack1 = true;
@@ -243,19 +243,60 @@ void HelloWorld::attack1() {
 		attackWay1 = 3;
 
 		if (attackWay1 == 1) {
-			theMap->setColor(skill1(theMap->tileCoordForPosition(player1->getPosition())), Color3B(139, 0, 0));
+			beingAttackedB=theMap->setColor(player2->getPosition(),skill1(theMap->tileCoordForPosition(player1->getPosition())), Color3B(139, 0, 0));
 		}
 		else if (attackWay1 == 2) {
-			theMap->setColor(skill2(theMap->tileCoordForPosition(player1->getPosition())), Color3B(139, 0, 0));
+			beingAttackedB = theMap->setColor(player2->getPosition(),skill2(theMap->tileCoordForPosition(player1->getPosition())), Color3B(139, 0, 0));
 		}
 		else if (attackWay1 == 3) {
-			theMap->setColor(skill3(theMap->tileCoordForPosition(player1->getPosition())), Color3B(139, 0, 0));
+			beingAttackedB = theMap->setColor(player2->getPosition(),skill3(theMap->tileCoordForPosition(player1->getPosition())), Color3B(139, 0, 0));
 		}
+		//此处要触发后退、损血
+		//player2->setPosition(534, 234);
+		beingAttacked(player1, player2);
+		CCLOG("%d", beingAttackedB);
 	}
 }
+void HelloWorld::beingAttacked(Sprite* attacker,Sprite* beingAttacker) {
+	theMap = Playground::getInstance();
+	Vec2 deltatemp= theMap->tileCoordForPosition(beingAttacker->getPosition()) - theMap->tileCoordForPosition(attacker->getPosition());//格坐标
+	Vec2 delta;
+	if (deltatemp.x > 0.5) {
+		delta.x = 1;
+	}else
+	if (deltatemp.x < -0.5) {
+		delta.x = -1;
+	}
+	else {
+		delta.x = 0;
+	}
 
-void HelloWorld::attack2() {
-	if (isMove2 == false && isAttack2 == false) {
+	if (deltatemp.y > 0.5) {
+		delta.y = 1;
+	}
+	else
+	if (deltatemp.y < -0.5) {
+			delta.y = -1;
+		}
+	else {
+		delta.y = 0;
+	}
+	//Vec2 delta( deltatemp.x == 0 ? 0: 1, deltatemp.y == 0? 0: 1);
+	//Vec2 delta.y = deltatemp.y == ? : 1;
+	Vec2 toGo =theMap->tileCoordForPosition(beingAttacker->getPosition()) + delta;//格坐标
+	if (theMap->isValid(toGo)) {
+		beingAttacker->setPosition(theMap->positionForTileCoord(toGo));//前往真实坐标
+
+		CCLOG("AttackChenggong %f %f",toGo.x,toGo.y);
+	}
+	else {
+		CCLOG("Attackshibai%f %f", toGo.x, toGo.y);
+	}
+
+	//此处还要扣血模块！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
+}
+void HelloWorld::attack2() {//player2的攻击
+/*	if (isMove2 == false && isAttack2 == false) {
 		isAttack2 = true;
 		theMap = Playground::getInstance();
 		reducePlayer2Blood();
@@ -271,7 +312,7 @@ void HelloWorld::attack2() {
 		else if (attackWay2 == 3) {
 			theMap->setColor(skill3(theMap->tileCoordForPosition(player2->getPosition())), Color3B(139, 0, 0));
 		}
-	}
+	}*/
 }
 
 
@@ -474,12 +515,12 @@ void HelloWorld::movePlayer1(char c) {
 			player1->runAction(down);
 		}
 	}
-	if (!currentPosition.equals(theMap->tileCoordForPosition(player1->getPosition()))){//当格子变动时
+	if (!currentPositionA.equals(theMap->tileCoordForPosition(player1->getPosition()))){//当格子变动时
 		CCLOG("tileChange %f %f", theMap->tileCoordForPosition(player1->getPosition()).x, theMap->tileCoordForPosition(player1->getPosition()).y);
-		theMap->setColor(currentPosition, currentColor3B);//上一个格子恢复先前颜色
-		currentPosition = theMap->tileCoordForPosition(player1->getPosition());//获得新的当前地址
-		currentColor3B = theMap->getColor(currentPosition);//保存当前位置的颜色
-		theMap->setColor(currentPosition, Color3B(100, 100, 100));//当前位置变成灰色
+		theMap->setColor(currentPositionA, currentColor3B);//上一个格子恢复先前颜色
+		currentPositionA = theMap->tileCoordForPosition(player1->getPosition());//获得新的当前地址
+		currentColor3B = theMap->getColor(currentPositionA);//保存当前位置的颜色
+		theMap->setColor(currentPositionA, Color3B(100, 100, 100));//当前位置变成灰色
 	}
 
 }
@@ -515,12 +556,12 @@ void HelloWorld::movePlayer2(char c) {
 			player2->runAction(down);
 		}
 	}
-	if (!currentPosition.equals(theMap->tileCoordForPosition(player2->getPosition()))) {//当格子变动时
+	if (!currentPositionB.equals(theMap->tileCoordForPosition(player2->getPosition()))) {//当格子变动时
 		CCLOG("tileChange %f %f", theMap->tileCoordForPosition(player2->getPosition()).x, theMap->tileCoordForPosition(player2->getPosition()).y);
-		theMap->setColor(currentPosition, currentColor3B);//上一个格子恢复先前颜色
-		currentPosition = theMap->tileCoordForPosition(player2->getPosition());//获得新的当前地址
-		currentColor3B = theMap->getColor(currentPosition);//保存当前位置的颜色
-		theMap->setColor(currentPosition, Color3B(100, 100, 100));//当前位置变成灰色
+		theMap->setColor(currentPositionB, currentColor3B);//上一个格子恢复先前颜色
+		currentPositionB = theMap->tileCoordForPosition(player2->getPosition());//获得新的当前地址
+		currentColor3B = theMap->getColor(currentPositionB);//保存当前位置的颜色
+		theMap->setColor(currentPositionB, Color3B(100, 100, 100));//当前位置变成灰色
 	}
 
 }

@@ -70,7 +70,8 @@ private:
 	int player1Direction;//0是上，1是下，2是左，3是右
 	int player2Direction;
 
-	Vec2 currentPosition;
+	Vec2 currentPositionA;
+	Vec2 currentPositionB;
 	Color3B currentColor3B=Color3B(255,255,255);
 
 	bool isAttack1;
@@ -104,6 +105,8 @@ private:
 	void reducePlayer2Blood();
 
 	PhysicsWorld* m_world;
-
+	bool beingAttackedA=false;
+	bool beingAttackedB=false;
+	void beingAttacked(Sprite* attacker, Sprite* beingAttacker);
 	enum Tag { PLAYER1, PLAYER2 };
 };

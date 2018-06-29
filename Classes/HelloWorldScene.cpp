@@ -253,7 +253,7 @@ void HelloWorld::attack1() {//player1的攻击
 		}
 		//此处要触发后退、损血
 		//player2->setPosition(534, 234);
-		beingAttacked(player1, player2);
+		if(beingAttackedB)beingAttacked(player1, player2);
 		CCLOG("%d", beingAttackedB);
 	}
 }
@@ -296,7 +296,7 @@ void HelloWorld::beingAttacked(Sprite* attacker,Sprite* beingAttacker) {
 	//此处还要扣血模块！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
 }
 void HelloWorld::attack2() {//player2的攻击
-/*	if (isMove2 == false && isAttack2 == false) {
+	if (isMove2 == false && isAttack2 == false) {
 		isAttack2 = true;
 		theMap = Playground::getInstance();
 		reducePlayer2Blood();
@@ -304,15 +304,17 @@ void HelloWorld::attack2() {//player2的攻击
 		attackWay2 = 1;
 		//theMap->setColor(skill1(theMap->tileCoordForPosition(player->getPosition())),Color3B(139,0,0));
 		if (attackWay2 == 1) {
-			theMap->setColor(skill1(theMap->tileCoordForPosition(player2->getPosition())), Color3B(139, 0, 0));
+			beingAttackedA=theMap->setColor(player1->getPosition(),skill1(theMap->tileCoordForPosition(player2->getPosition())), Color3B(139, 0, 0));
 		}
 		else if (attackWay2 == 2) {
-			theMap->setColor(skill2(theMap->tileCoordForPosition(player2->getPosition())), Color3B(139, 0, 0));
+			beingAttackedA = theMap->setColor(player1->getPosition(),skill2(theMap->tileCoordForPosition(player2->getPosition())), Color3B(139, 0, 0));
 		}
 		else if (attackWay2 == 3) {
-			theMap->setColor(skill3(theMap->tileCoordForPosition(player2->getPosition())), Color3B(139, 0, 0));
+			beingAttackedA = theMap->setColor(player1->getPosition(),skill3(theMap->tileCoordForPosition(player2->getPosition())), Color3B(139, 0, 0));
 		}
-	}*/
+		if (beingAttackedA)beingAttacked(player2, player1);
+	}
+
 }
 
 

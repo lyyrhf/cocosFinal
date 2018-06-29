@@ -93,9 +93,9 @@ private:
 	Vector<SpriteFrame*> deadAnimation;
 
 	bool isPlayer1Dead;
-	int player1Blood;//只要改变这个值就可以改变血条了
+	int player1Blood;
 	std::stack<Sprite*> player1BloodStack;
-	void reducePlayer1Blood();
+	void reducePlayer1Blood();//调用这个函数，进行血条的控制，只可以减少，不可以增加
 
 
 	bool isPlayer2Dead;

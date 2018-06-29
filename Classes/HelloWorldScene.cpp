@@ -51,7 +51,7 @@ bool HelloWorld::init()
 
 	auto edgeSp = Sprite::create();  //创建一个精灵
 	cocos2d::Size boundSize = Size(visibleSize.width - 200, visibleSize.height - 200);
-	auto boundBody = PhysicsBody::createEdgeBox(boundSize, PhysicsMaterial(0.0f, 0.0f, 0.0f), 3);  //edgebox是不受刚体碰撞影响的一种刚体，我们用它来设置物理世界的边界
+	auto boundBody = PhysicsBody::createEdgeBox(boundSize, PhysicsMaterial(0.0f, 0.0f, 0.0f), 10);  //edgebox是不受刚体碰撞影响的一种刚体，我们用它来设置物理世界的边界
 	edgeSp->setPosition(visibleSize.width / 2, visibleSize.height / 2 - 80);  //位置设置在屏幕中央
 	edgeSp->setPhysicsBody(boundBody);
 	addChild(edgeSp);
@@ -141,7 +141,7 @@ bool HelloWorld::init()
 	//使用第一帧创建精灵
 	player1 = Sprite::createWithSpriteFrame(frame[0]);
 
-	auto playerBody1 = PhysicsBody::createBox(player1->getContentSize(), PhysicsMaterial(1.0f, 0.0f, 0.0f));
+	auto playerBody1 = PhysicsBody::createBox(Size(50,50), PhysicsMaterial(100.0f, 0.0f, 0.0f));
 	playerBody1->setCategoryBitmask(0xFFFFFFFF);
 	playerBody1->setCollisionBitmask(0xFFFFFFFF);
 	playerBody1->setContactTestBitmask(0xFFFFFFFF);
@@ -155,10 +155,8 @@ bool HelloWorld::init()
 	addChild(player1, 3);
 	player1->setAnchorPoint(Point(0.5,0.1));
 
-
-
 	player2 = Sprite::createWithSpriteFrame(frame[0]);
-	auto playerBody2 = PhysicsBody::createBox(player2->getContentSize(), PhysicsMaterial(1.0f, 0.0f, 0.0f));
+	auto playerBody2 = PhysicsBody::createBox(Size(50,50), PhysicsMaterial(100.0f, 0.0f, 0.0f));
 	playerBody2->setCategoryBitmask(0xFFFFFFFF);
 	playerBody2->setCollisionBitmask(0xFFFFFFFF);
 	playerBody2->setContactTestBitmask(0xFFFFFFFF);

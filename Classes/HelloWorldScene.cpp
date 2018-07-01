@@ -240,7 +240,7 @@ void HelloWorld::attack1() {//player1的攻击
 		theMap = Playground::getInstance();
 		isAttack1 = true;
 		
-		reducePlayer1Blood();
+		//reducePlayer1Blood();
 		playWindAttack(player1);
 		//playFireAttack(player1);
 		//playDargonAttack(player1);
@@ -249,13 +249,13 @@ void HelloWorld::attack1() {//player1的攻击
 		attackWay1 = 3;
 
 		if (attackWay1 == 1) {
-			beingAttackedB=theMap->setColor(player2->getPosition(),skill1(theMap->tileCoordForPosition(player1->getPosition())), Color3B(139, 0, 0));
+			beingAttackedB=theMap->setColor(player2->getPosition(),skill1(theMap->tileCoordForPosition(player1->getPosition())), playerAColor3B);
 		}
 		else if (attackWay1 == 2) {
-			beingAttackedB = theMap->setColor(player2->getPosition(),skill2(theMap->tileCoordForPosition(player1->getPosition())), Color3B(139, 0, 0));
+			beingAttackedB = theMap->setColor(player2->getPosition(),skill2(theMap->tileCoordForPosition(player1->getPosition())), playerAColor3B);
 		}
 		else if (attackWay1 == 3) {
-			beingAttackedB = theMap->setColor(player2->getPosition(),skill3(theMap->tileCoordForPosition(player1->getPosition())), Color3B(139, 0, 0));
+			beingAttackedB = theMap->setColor(player2->getPosition(),skill3(theMap->tileCoordForPosition(player1->getPosition())), playerAColor3B);
 		}
 		//此处要触发后退、损血
 		//player2->setPosition(534, 234);
@@ -298,25 +298,30 @@ void HelloWorld::beingAttacked(Sprite* attacker,Sprite* beingAttacker) {
 	else {
 		CCLOG("Attackshibai%f %f", toGo.x, toGo.y);
 	}
-
+	if (beingAttacker == player2) {
+		reducePlayer2Blood();
+	}
+	if (beingAttacker == player1) {
+		reducePlayer1Blood();
+	}
 	//此处还要扣血模块！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
 }
 void HelloWorld::attack2() {//player2的攻击
 	if (isMove2 == false && isAttack2 == false) {
 		isAttack2 = true;
 		theMap = Playground::getInstance();
-		reducePlayer2Blood();
+		//reducePlayer2Blood();
 		playDargonAttack(player2);
 		attackWay2 = 1;
 		//theMap->setColor(skill1(theMap->tileCoordForPosition(player->getPosition())),Color3B(139,0,0));
 		if (attackWay2 == 1) {
-			beingAttackedA=theMap->setColor(player1->getPosition(),skill1(theMap->tileCoordForPosition(player2->getPosition())), Color3B(139, 0, 0));
+			beingAttackedA=theMap->setColor(player1->getPosition(),skill1(theMap->tileCoordForPosition(player2->getPosition())), playerBColor3B);
 		}
 		else if (attackWay2 == 2) {
-			beingAttackedA = theMap->setColor(player1->getPosition(),skill2(theMap->tileCoordForPosition(player2->getPosition())), Color3B(139, 0, 0));
+			beingAttackedA = theMap->setColor(player1->getPosition(),skill2(theMap->tileCoordForPosition(player2->getPosition())), playerBColor3B);
 		}
 		else if (attackWay2 == 3) {
-			beingAttackedA = theMap->setColor(player1->getPosition(),skill3(theMap->tileCoordForPosition(player2->getPosition())), Color3B(139, 0, 0));
+			beingAttackedA = theMap->setColor(player1->getPosition(),skill3(theMap->tileCoordForPosition(player2->getPosition())), playerBColor3B);
 		}
 		if (beingAttackedA)beingAttacked(player2, player1);
 	}
@@ -393,61 +398,61 @@ void HelloWorld::onKeyPressed(EventKeyboard::KeyCode code, Event* event) {
 	case EventKeyboard::KeyCode::KEY_A:
 		movekey1 = 'A';
 		isMove1 = true;
-		if (isAttack1 == false) {
+		/*if (isAttack1 == false) {
 			player1->getPhysicsBody()->setVelocity(Vec2(-500, 0));
-		}
+		}*/
 		break;
 	case EventKeyboard::KeyCode::KEY_CAPITAL_D:
 	case EventKeyboard::KeyCode::KEY_D:
 		movekey1 = 'D';
 		isMove1 = true;
-		if (isAttack1 == false) {
+		/*if (isAttack1 == false) {
 			player1->getPhysicsBody()->setVelocity(Vec2(500, 0));
-		}
+		}*/
 		break;
 	case EventKeyboard::KeyCode::KEY_CAPITAL_S:
 	case EventKeyboard::KeyCode::KEY_S:
 		movekey1 = 'S';
 		isMove1 = true;
-		if (isAttack1 == false) {
+		/*if (isAttack1 == false) {
 			player1->getPhysicsBody()->setVelocity(Vec2(0, -500));
-		}
+		}*/
 		break;
 	case EventKeyboard::KeyCode::KEY_CAPITAL_W:
 	case EventKeyboard::KeyCode::KEY_W:
 		movekey1 = 'W';
 		isMove1 = true;
-		if (isAttack1 == false) {
+		/*if (isAttack1 == false) {
 			player1->getPhysicsBody()->setVelocity(Vec2(0, 500));
-		}
+		}*/
 		break;
 	case EventKeyboard::KeyCode::KEY_LEFT_ARROW:
 		movekey2 = 'A';
 		isMove2 = true;
-		if (isAttack2 == false) {
+		/*if (isAttack2 == false) {
 			player2->getPhysicsBody()->setVelocity(Vec2(-500, 0));
-		}
+		}*/
 		break;
 	case EventKeyboard::KeyCode::KEY_RIGHT_ARROW:
 		movekey2 = 'D';
 		isMove2 = true;
-		if (isAttack2 == false) {
+		/*if (isAttack2 == false) {
 			player2->getPhysicsBody()->setVelocity(Vec2(500, 0));
-		}
+		}*/
 		break;
 	case EventKeyboard::KeyCode::KEY_DOWN_ARROW:
 		movekey2 = 'S';
 		isMove2 = true;
-		if (isAttack2 == false) {
+		/*if (isAttack2 == false) {
 			player2->getPhysicsBody()->setVelocity(Vec2(0, -500));
-		}
+		}*/
 		break;
 	case EventKeyboard::KeyCode::KEY_UP_ARROW:
 		movekey2 = 'W';
 		isMove2 = true;
-		if (isAttack2 == false) {
+		/*if (isAttack2 == false) {
 			player2->getPhysicsBody()->setVelocity(Vec2(0, 500));
-		}
+		}*/
 		break;
 	case EventKeyboard::KeyCode::KEY_SPACE:
 		attack1();
@@ -497,30 +502,41 @@ void HelloWorld::movePlayer1(char c) {
 		theMap = Playground::getInstance();
 		CCLOG("Player == %f,%f", player1->getPosition().x, player1->getPosition().y);
 		CCLOG("OpenGL == %f,%f", theMap->tileCoordForPosition(player1->getPosition()).x, theMap->tileCoordForPosition(player1->getPosition()).y);
-
+		Color3B tempColor=theMap->getColor(theMap->tileCoordForPosition(player1->getPosition()));
+		float factor = 1;
+		if (tempColor == playerAColor3B) {
+			factor =5;
+		}
+		else if (tempColor == playerBColor3B) {
+			factor = 0.8;
+		}
 		if (c == 'A') {
 			player1Direction = 2;
 
 			auto left = Animate::create(AnimationCache::getInstance()->getAnimation("left"));
 			player1->runAction(left);
+			player1->getPhysicsBody()->setVelocity(Vec2(-120*factor, 0));
 		}
 		else if (c == 'D') {
 			player1Direction = 3;
 
 			auto right = Animate::create(AnimationCache::getInstance()->getAnimation("right"));
 			player1->runAction(right);
+			player1->getPhysicsBody()->setVelocity(Vec2(120 * factor, 0));
 		}
 		else if (c == 'W') {
 			player1Direction = 0;
 
 			auto up = Animate::create(AnimationCache::getInstance()->getAnimation("up"));
 			player1->runAction(up);
+			player1->getPhysicsBody()->setVelocity(Vec2(0, 120 * factor));
 		}
 		else if (c == 'S') {
 			player1Direction = 1;
 
 			auto down = Animate::create(AnimationCache::getInstance()->getAnimation("down"));
 			player1->runAction(down);
+			player1->getPhysicsBody()->setVelocity(Vec2(0,-120 * factor));
 		}
 	}
 	if (!currentPositionA.equals(theMap->tileCoordForPosition(player1->getPosition()))){//当格子变动时
@@ -538,30 +554,41 @@ void HelloWorld::movePlayer2(char c) {
 		theMap = Playground::getInstance();
 		CCLOG("Player == %f,%f", player2->getPosition().x, player2->getPosition().y);
 		CCLOG("OpenGL == %f,%f", theMap->tileCoordForPosition(player2->getPosition()).x, theMap->tileCoordForPosition(player2->getPosition()).y);
-
+		Color3B tempColor = theMap->getColor(theMap->tileCoordForPosition(player1->getPosition()));
+		float factor = 1;
+		if (tempColor == playerBColor3B) {
+			factor = 5;
+		}
+		else if (tempColor == playerAColor3B) {
+			factor = 0.8;
+		}
 		if (c == 'A') {
 			player2Direction = 2;
 
 			auto left = Animate::create(AnimationCache::getInstance()->getAnimation("left"));
 			player2->runAction(left);
+			player2->getPhysicsBody()->setVelocity(Vec2(-120 * factor, 0));
 		}
 		else if (c == 'D') {
 			player2Direction = 3;
 
 			auto right = Animate::create(AnimationCache::getInstance()->getAnimation("right"));
 			player2->runAction(right);
+			player2->getPhysicsBody()->setVelocity(Vec2(120 * factor, 0));
 		}
 		else if (c == 'W') {
 			player2Direction = 0;
 
 			auto up = Animate::create(AnimationCache::getInstance()->getAnimation("up"));
 			player2->runAction(up);
+			player2->getPhysicsBody()->setVelocity(Vec2(0, 120 * factor));
 		}
 		else if (c == 'S') {
 			player2Direction = 1;
 
 			auto down = Animate::create(AnimationCache::getInstance()->getAnimation("down"));
 			player2->runAction(down);
+			player2->getPhysicsBody()->setVelocity(Vec2(0, -120 * factor));
 		}
 	}
 	if (!currentPositionB.equals(theMap->tileCoordForPosition(player2->getPosition()))) {//当格子变动时

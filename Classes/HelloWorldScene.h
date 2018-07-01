@@ -73,7 +73,8 @@ private:
 	Vec2 currentPositionA;
 	Vec2 currentPositionB;
 	Color3B currentColor3B=Color3B(255,255,255);
-
+	Color3B playerAColor3B = Color3B(139, 0, 0);
+	Color3B playerBColor3B = Color3B(0,139,0);
 	bool isAttack1;
 	bool isAttack2;
 

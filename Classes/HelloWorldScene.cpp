@@ -153,9 +153,14 @@ bool HelloWorld::init()
 	//playerBody1->setDynamic(false);
 	player1->setPhysicsBody(playerBody1);
 	player1->getPhysicsBody()->setRotationEnable(false);
+	
 
-	player1->setPosition(Vec2(origin.x + visibleSize.width / 2,
-		origin.y + visibleSize.height / 2));
+	Vec2* t = new Vec2(4, 7);
+	Vec2 temp = theMap->positionForTileCoord(*t);
+
+
+
+	player1->setPosition(temp);
 	addChild(player1, 3);
 	player1->setAnchorPoint(Point(0.5,0.1));
 
@@ -170,35 +175,16 @@ bool HelloWorld::init()
 	player2->setPhysicsBody(playerBody2);
 	player2->getPhysicsBody()->setRotationEnable(false);
 
-	player2->setPosition(Vec2(origin.x + visibleSize.width / 2 + 200,
-		origin.y + visibleSize.height / 2 - 150));
+	Vec2* t2 = new Vec2(13, 10);
+	Vec2 temp2 = theMap->positionForTileCoord(*t2);
+
+	player2->setPosition(temp2);
 	addChild(player2, 3);
 	player2->setAnchorPoint(Point(0.5, 0.1));
 
 	// 静态动画
 	idle.reserve(1);
 	idle.pushBack(frame[0]);//静止状态是第一帧
-
-	//hp条
-	/*
-	Sprite* sp0 = Sprite::create("hp.png", CC_RECT_PIXELS_TO_POINTS(Rect(0, 320, 420, 47)));
-	Sprite* sp = Sprite::create("hp.png", CC_RECT_PIXELS_TO_POINTS(Rect(610, 362, 4, 16)));
-
-	//使用hp条设置progressBar
-	pT = ProgressTimer::create(sp);
-	pT->setScaleX(90);
-	pT->setAnchorPoint(Vec2(0, 0));
-	pT->setType(ProgressTimerType::BAR);
-	pT->setBarChangeRate(Point(1, 0));
-	pT->setMidpoint(Point(0, 1));
-	pT->setPercentage(100);
-	pT->setPosition(Vec2(origin.x + 14 * pT->getContentSize().width, origin.y + visibleSize.height - 2 * pT->getContentSize().height));
-	addChild(pT, 1);
-	sp0->setAnchorPoint(Vec2(0, 0));
-	sp0->setPosition(Vec2(origin.x + pT->getContentSize().width, origin.y + visibleSize.height - sp0->getContentSize().height));
-	addChild(sp0, 0);
-	*/
-
 
 
 	auto menu = Menu::create();
@@ -220,8 +206,9 @@ bool HelloWorld::init()
 	time->setPosition(origin.x + visibleSize.width / 2, origin.y + visibleSize.height -50);
 	addChild(time);
 
-	gameText = Label::createWithTTF("0", "fonts/arial.ttf", 36);
+	gameText = Label::createWithTTF("Player:WASD+Space \nPlayer2:arrow keys+Enter", "fonts/arial.ttf", 36);
 	gameText->setPosition(origin.x + visibleSize.width / 2, origin.y + visibleSize.height - 100);
+	gameText->setColor(Color3B(35, 35, 35));
 	addChild(gameText);
 
 	addKeyboardListener();
@@ -944,6 +931,10 @@ void HelloWorld::reducePlayer1Blood()
 	if (player1BloodStack.empty()) {
 		return;
 	}
+	auto affect = ParticleExplosion::create();
+	affect->setPosition(player1->getPosition());
+	affect->setLife(0.2f);
+	addChild(affect,3);
 	auto temp = player1BloodStack.top();
 	temp->removeFromParentAndCleanup(true);
 	player1BloodStack.pop();
@@ -954,6 +945,10 @@ void HelloWorld::reducePlayer2Blood()
 	if (player2BloodStack.empty()) {
 		return;
 	}
+	auto affect = ParticleExplosion::create();
+	affect->setPosition(player2->getPosition());
+	affect->setLife(0.2f);
+	addChild(affect, 3);
 	auto temp = player2BloodStack.top();
 	temp->removeFromParentAndCleanup(true);
 	player2BloodStack.pop();

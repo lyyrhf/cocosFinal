@@ -226,7 +226,7 @@ bool HelloWorld::init()
 	//每一秒时间减少一
 	schedule(schedule_selector(HelloWorld::update), 1.0f);
 //	schedule(schedule_selector(HelloWorld::stop), 0.1f);
-
+	schedule(schedule_selector(HelloWorld::itemGenerate), 5.0f);
 
 	auto contactListener = EventListenerPhysicsContact::create();
 	contactListener->onContactBegin = CC_CALLBACK_1(HelloWorld::onConcactBegin, this);
@@ -234,7 +234,19 @@ bool HelloWorld::init()
 
     return true;
 }
-
+void HelloWorld::itemGenerate(float time){
+	if (item != NULL) {
+		return;
+	}
+	theMap = Playground::getInstance();
+	item = Sprite::create("dargonPic.png");
+	item->setScale(0.4f);
+	CCLOG("Generated");
+	Vec2* t = new Vec2(8, 8);
+	Vec2 temp = theMap->positionForTileCoord(*t);
+	item->setPosition(temp.x, temp.y);
+	addChild(item, 3);
+}
 void HelloWorld::attack1() {//player1的攻击
 	if (isMove1 == false && isAttack1 == false) {
 		theMap = Playground::getInstance();

@@ -44,7 +44,7 @@ public:
 		int y = (mapSize.height*tileSize.width - position.y) / tileSize.width;// *8 / 7 + 2;
 		return Vec2(x, y);
 	}
-	Vec2 positionForTileCoord(const Vec2& tileCoord)
+	Vec2 positionForTileCoord(const Vec2 tileCoord)
 	{
 		int x = tileCoord.x * tileSize.width + tileSize.width / 2;
 		int y = (mapSize.height - tileCoord.y)*tileSize.height - tileSize.height / 2;

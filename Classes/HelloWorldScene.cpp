@@ -543,12 +543,12 @@ void HelloWorld::movePlayer1(char c) {
 		//CCLOG("Player == %f,%f", player1->getPosition().x, player1->getPosition().y);
 		//CCLOG("OpenGL == %f,%f", theMap->tileCoordForPosition(player1->getPosition()).x, theMap->tileCoordForPosition(player1->getPosition()).y);
 		Color3B tempColor=theMap->getColor(theMap->tileCoordForPosition(player1->getPosition()));
-		float factor = 1;
+		float factor = 0.8;
 		if (tempColor == playerAColor3B) {
-			factor =1.6;
+			factor =1.2;
 		}
 		else if (tempColor == playerBColor3B) {
-			factor = 0.8;
+			factor = 0.5;
 		}
 		if (c == 'A') {
 			player1Direction = 2;
@@ -594,13 +594,13 @@ void HelloWorld::movePlayer2(char c) {
 		theMap = Playground::getInstance();
 		//CCLOG("Player == %f,%f", player2->getPosition().x, player2->getPosition().y);
 		//CCLOG("OpenGL == %f,%f", theMap->tileCoordForPosition(player2->getPosition()).x, theMap->tileCoordForPosition(player2->getPosition()).y);
-		Color3B tempColor = theMap->getColor(theMap->tileCoordForPosition(player1->getPosition()));
-		float factor = 1;
+		Color3B tempColor = theMap->getColor(theMap->tileCoordForPosition(player2->getPosition()));
+		float factor = 0.8;
 		if (tempColor == playerBColor3B) {
-			factor = 1.6;
+			factor = 1.2;
 		}
 		else if (tempColor == playerAColor3B) {
-			factor = 0.8;
+			factor = 0.5;
 		}
 		if (c == 'A') {
 			player2Direction = 2;

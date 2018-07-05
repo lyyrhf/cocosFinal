@@ -114,4 +114,5 @@ private:
 
 	Sprite* item=NULL;
 	void itemGenerate(float time);
+	int kindOfItem;
 };

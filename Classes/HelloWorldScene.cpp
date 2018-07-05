@@ -47,7 +47,7 @@ bool HelloWorld::init()
 	visibleSize = Director::getInstance()->getVisibleSize();
 	origin = Director::getInstance()->getVisibleOrigin();
 
-	CCLOG("visibleSize.width = %f",visibleSize.width);
+	//CCLOG("visibleSize.width = %f",visibleSize.width);
 
 	auto edgeSp = Sprite::create();  //创建一个精灵
 	cocos2d::Size boundSize = Size(visibleSize.width - 160, visibleSize.height - 150);
@@ -121,6 +121,7 @@ bool HelloWorld::init()
 	player1Blood = 3;//设置初始血条
 	player2Blood = 3;
 
+	kindOfItem = 1;
 
 	for (int i = 1; i <= player1Blood; i++) {
 		auto blood = Sprite::create("blood.png");
@@ -239,8 +240,35 @@ void HelloWorld::itemGenerate(float time){
 		return;
 	}
 	theMap = Playground::getInstance();
-	item = Sprite::create("dargonPic.png");
+	if (kindOfItem%3 == 1) {
+		item = Sprite::create("dargonPic.png");
+	}
+	else if (kindOfItem%3 == 2) {
+		item = Sprite::create("firePic.png");
+	}
+	else if (kindOfItem%3 == 0) {
+		item = Sprite::create("windPic.png");
+	}
+	kindOfItem++;
 	item->setScale(0.4f);
+
+	auto itemBody = PhysicsBody::createBox(Size(50, 50), PhysicsMaterial(100.0f, 0.0f, 0.0f));
+	itemBody->setCategoryBitmask(0xFFFFFFFF);
+	itemBody->setCollisionBitmask(0xFFFFFFFF);
+	itemBody->setContactTestBitmask(0xFFFFFFFF);
+	itemBody->setGravityEnable(false);
+	if (kindOfItem % 3 == 1) {
+		itemBody->setTag(Tag::SKILL1);
+	}
+	else if (kindOfItem % 3 == 2) {
+		itemBody->setTag(Tag::SKILL2);
+	}
+	else if (kindOfItem % 3 == 0) {
+		itemBody->setTag(Tag::SKILL3);
+	}
+	item->setPhysicsBody(itemBody);
+	item->getPhysicsBody()->setRotationEnable(false);
+
 	CCLOG("Generated");
 	Vec2* t = new Vec2(8, 8);
 	Vec2 temp = theMap->positionForTileCoord(*t);
@@ -272,7 +300,7 @@ void HelloWorld::attack1() {//player1的攻击
 		//此处要触发后退、损血
 		//player2->setPosition(534, 234);
 		if(beingAttackedB)beingAttacked(player1, player2);
-		CCLOG("%d", beingAttackedB);
+		//CCLOG("%d", beingAttackedB);
 	}
 }
 void HelloWorld::beingAttacked(Sprite* attacker,Sprite* beingAttacker) {
@@ -305,10 +333,10 @@ void HelloWorld::beingAttacked(Sprite* attacker,Sprite* beingAttacker) {
 	if (theMap->isValid(toGo)) {
 		beingAttacker->setPosition(theMap->positionForTileCoord(toGo));//前往真实坐标
 
-		CCLOG("AttackChenggong %f %f",toGo.x,toGo.y);
+		//CCLOG("AttackChenggong %f %f",toGo.x,toGo.y);
 	}
 	else {
-		CCLOG("Attackshibai%f %f", toGo.x, toGo.y);
+		//CCLOG("Attackshibai%f %f", toGo.x, toGo.y);
 	}
 	if (beingAttacker == player2) {
 		reducePlayer2Blood();
@@ -512,8 +540,8 @@ void HelloWorld::movePlayer1(char c) {
 	if (isAttack1 == false) {
 		CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("walk.wav");
 		theMap = Playground::getInstance();
-		CCLOG("Player == %f,%f", player1->getPosition().x, player1->getPosition().y);
-		CCLOG("OpenGL == %f,%f", theMap->tileCoordForPosition(player1->getPosition()).x, theMap->tileCoordForPosition(player1->getPosition()).y);
+		//CCLOG("Player == %f,%f", player1->getPosition().x, player1->getPosition().y);
+		//CCLOG("OpenGL == %f,%f", theMap->tileCoordForPosition(player1->getPosition()).x, theMap->tileCoordForPosition(player1->getPosition()).y);
 		Color3B tempColor=theMap->getColor(theMap->tileCoordForPosition(player1->getPosition()));
 		float factor = 1;
 		if (tempColor == playerAColor3B) {
@@ -564,8 +592,8 @@ void HelloWorld::movePlayer2(char c) {
 	if (isAttack2 == false) {
 		CocosDenshion::SimpleAudioEngine::getInstance()->playEffect("walk.wav");
 		theMap = Playground::getInstance();
-		CCLOG("Player == %f,%f", player2->getPosition().x, player2->getPosition().y);
-		CCLOG("OpenGL == %f,%f", theMap->tileCoordForPosition(player2->getPosition()).x, theMap->tileCoordForPosition(player2->getPosition()).y);
+		//CCLOG("Player == %f,%f", player2->getPosition().x, player2->getPosition().y);
+		//CCLOG("OpenGL == %f,%f", theMap->tileCoordForPosition(player2->getPosition()).x, theMap->tileCoordForPosition(player2->getPosition()).y);
 		Color3B tempColor = theMap->getColor(theMap->tileCoordForPosition(player1->getPosition()));
 		float factor = 1;
 		if (tempColor == playerBColor3B) {
@@ -866,13 +894,20 @@ void HelloWorld::reducePlayer2Blood()
 }
 
 bool HelloWorld::onConcactBegin(PhysicsContact & contact) {
-	CCLOG("yes");
+	//CCLOG("yes");
 	auto c1 = contact.getShapeA()->getBody(), c2 = contact.getShapeB()->getBody();
 	auto s1 = (Sprite*)c1->getNode(), s2 = (Sprite*)c2->getNode();
 	
 	if (c1->getTag() == Tag::PLAYER1 && c2->getTag() == Tag::PLAYER2) {
 		s1->getPhysicsBody()->setVelocity(Vec2(0, 0));
 		s2->getPhysicsBody()->setVelocity(Vec2(0, 0));
+	}
+	if (c1->getTag() == Tag::PLAYER1 && c2->getTag() == Tag::SKILL1 || c2->getTag() == Tag::SKILL2 || c2->getTag() == Tag::SKILL3) {
+		s2->removeFromParentAndCleanup(true);
+		s2->release();
+		if (s2 != NULL) {
+			CCLOG("s2 != NULL");
+		}
 	}
 	return true;
 }

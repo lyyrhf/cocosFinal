@@ -70,8 +70,8 @@ private:
 	int player1Direction;//0是上，1是下，2是左，3是右
 	int player2Direction;
 
-	Vec2 currentPositionA;
-	Vec2 currentPositionB;
+	//Vec2 currentPositionA;
+	//Vec2 currentPositionB;
 	Color3B currentColor3B=Color3B(255,255,255);
 	Color3B playerAColor3B = Color3B(139, 0, 0);
 	Color3B playerBColor3B = Color3B(0,139,0);

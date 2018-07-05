@@ -505,7 +505,7 @@ void HelloWorld::movePlayer1(char c) {
 		Color3B tempColor=theMap->getColor(theMap->tileCoordForPosition(player1->getPosition()));
 		float factor = 1;
 		if (tempColor == playerAColor3B) {
-			factor =5;
+			factor =1.6;
 		}
 		else if (tempColor == playerBColor3B) {
 			factor = 0.8;
@@ -539,13 +539,13 @@ void HelloWorld::movePlayer1(char c) {
 			player1->getPhysicsBody()->setVelocity(Vec2(0,-120 * factor));
 		}
 	}
-	if (!currentPositionA.equals(theMap->tileCoordForPosition(player1->getPosition()))){//当格子变动时
+	/*if (!currentPositionA.equals(theMap->tileCoordForPosition(player1->getPosition()))){//当格子变动时
 		CCLOG("tileChange %f %f", theMap->tileCoordForPosition(player1->getPosition()).x, theMap->tileCoordForPosition(player1->getPosition()).y);
 		theMap->setColor(currentPositionA, currentColor3B);//上一个格子恢复先前颜色
 		currentPositionA = theMap->tileCoordForPosition(player1->getPosition());//获得新的当前地址
 		currentColor3B = theMap->getColor(currentPositionA);//保存当前位置的颜色
 		theMap->setColor(currentPositionA, Color3B(100, 100, 100));//当前位置变成灰色
-	}
+	}*/
 
 }
 void HelloWorld::movePlayer2(char c) {
@@ -557,7 +557,7 @@ void HelloWorld::movePlayer2(char c) {
 		Color3B tempColor = theMap->getColor(theMap->tileCoordForPosition(player1->getPosition()));
 		float factor = 1;
 		if (tempColor == playerBColor3B) {
-			factor = 5;
+			factor = 1.6;
 		}
 		else if (tempColor == playerAColor3B) {
 			factor = 0.8;
@@ -591,13 +591,13 @@ void HelloWorld::movePlayer2(char c) {
 			player2->getPhysicsBody()->setVelocity(Vec2(0, -120 * factor));
 		}
 	}
-	if (!currentPositionB.equals(theMap->tileCoordForPosition(player2->getPosition()))) {//当格子变动时
+/*	if (!currentPositionB.equals(theMap->tileCoordForPosition(player2->getPosition()))) {//当格子变动时
 		CCLOG("tileChange %f %f", theMap->tileCoordForPosition(player2->getPosition()).x, theMap->tileCoordForPosition(player2->getPosition()).y);
 		theMap->setColor(currentPositionB, currentColor3B);//上一个格子恢复先前颜色
 		currentPositionB = theMap->tileCoordForPosition(player2->getPosition());//获得新的当前地址
 		currentColor3B = theMap->getColor(currentPositionB);//保存当前位置的颜色
 		theMap->setColor(currentPositionB, Color3B(100, 100, 100));//当前位置变成灰色
-	}
+	}*/
 
 }
 

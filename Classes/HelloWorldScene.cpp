@@ -523,22 +523,35 @@ void HelloWorld::onKeyReleased(EventKeyboard::KeyCode code, Event* event) {
 	switch (code) {
 	case EventKeyboard::KeyCode::KEY_A:
 	case EventKeyboard::KeyCode::KEY_CAPITAL_A:
+
 	case EventKeyboard::KeyCode::KEY_D:
 	case EventKeyboard::KeyCode::KEY_CAPITAL_D:
+		isMove1 = false;
+		player1->getPhysicsBody()->setVelocity(Vec2(0, player1->getPhysicsBody()->getVelocity().y));
+		break;
 	case EventKeyboard::KeyCode::KEY_S:
 	case EventKeyboard::KeyCode::KEY_CAPITAL_S:
 	case EventKeyboard::KeyCode::KEY_W:
 	case EventKeyboard::KeyCode::KEY_CAPITAL_W:
 		isMove1 = false;
-		player1->getPhysicsBody()->setVelocity(Vec2(0, 0));
+		player1->getPhysicsBody()->setVelocity(Vec2(player1->getPhysicsBody()->getVelocity().x, 0));
 		break;
+		//isMove1 = false;
+		//player1->getPhysicsBody()->setVelocity(Vec2(0, 0));
+		//break;
 
 	case EventKeyboard::KeyCode::KEY_LEFT_ARROW:
 	case EventKeyboard::KeyCode::KEY_RIGHT_ARROW:
+		isMove2 = false;
+		player2->getPhysicsBody()->setVelocity(Vec2(0, player2->getPhysicsBody()->getVelocity().y));
+		break;
 	case EventKeyboard::KeyCode::KEY_UP_ARROW:
 	case EventKeyboard::KeyCode::KEY_DOWN_ARROW:
+		//isMove2 = false;
+		//player2->getPhysicsBody()->setVelocity(Vec2(0, 0));
+		//break;
 		isMove2 = false;
-		player2->getPhysicsBody()->setVelocity(Vec2(0, 0));
+		player2->getPhysicsBody()->setVelocity(Vec2(player2->getPhysicsBody()->getVelocity().x, 0));
 		break;
 	}
 }

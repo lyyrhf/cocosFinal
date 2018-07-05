@@ -64,6 +64,7 @@ private:
 	std::vector<Vec2> skill1(Vec2 temp);
 	std::vector<Vec2> skill2(Vec2 temp);
 	std::vector<Vec2> skill3(Vec2 temp);
+	std::vector<Vec2> skill4(Vec2 temp);
 	Playground * theMap;
 
 

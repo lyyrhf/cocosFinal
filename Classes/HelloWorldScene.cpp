@@ -362,11 +362,10 @@ void HelloWorld::attack2() {//player2的攻击
 		}
 		else if (attackWay2 == 3) {
 			playFireAttack(player2);
-			beingAttackedA = theMap->setColor(player1->getPosition(),skill3(theMap->tileCoordForPosition(player2->getPosition())), playerBColor3B);
+			beingAttackedA = theMap->setColor(player1->getPosition(),skill4(theMap->tileCoordForPosition(player2->getPosition())), playerBColor3B);
 		}
 		if (beingAttackedA)beingAttacked(player2, player1);
 	}
-
 }
 
 
@@ -726,7 +725,44 @@ std::vector<Vec2> HelloWorld::skill3(Vec2 input)
 	skillArea.push_back(input);
 	return skillArea;
 }
-
+std::vector<Vec2> HelloWorld::skill4(Vec2 input)
+{
+	std::vector<Vec2> skillArea;
+	Vec2 Direction1;
+	Vec2 Direction2;
+	Vec2 Direction3;
+	Vec2 Direction4;
+	if (player2Direction == 3) {
+		Direction1 = Vec2(input.x + 1, input.y);
+		Direction2 = Vec2(input.x + 2, input.y);
+		Direction3 = Vec2(input.x + 3, input.y);
+		Direction4 = Vec2(input.x + 4, input.y);
+	}
+	else if (player2Direction == 2) {
+		Direction1 = Vec2(input.x - 1, input.y);
+		Direction2 = Vec2(input.x - 2, input.y);
+		Direction3 = Vec2(input.x - 3, input.y);
+		Direction4 = Vec2(input.x - 4, input.y);
+	}
+	else if (player2Direction == 1) {
+		Direction1 = Vec2(input.x, input.y + 1);
+		Direction2 = Vec2(input.x, input.y + 2);
+		Direction3 = Vec2(input.x, input.y + 3);
+		Direction4 = Vec2(input.x, input.y + 4);
+	}
+	else if (player2Direction == 0) {
+		Direction1 = Vec2(input.x, input.y - 1);
+		Direction2 = Vec2(input.x, input.y - 2);
+		Direction3 = Vec2(input.x, input.y - 3);
+		Direction4 = Vec2(input.x, input.y - 4);
+	}
+	skillArea.push_back(Direction1);
+	skillArea.push_back(Direction2);
+	skillArea.push_back(Direction3);
+	skillArea.push_back(Direction4);
+	skillArea.push_back(input);
+	return skillArea;
+}
 
 void HelloWorld::loadWindAttack() 
 {
@@ -775,7 +811,7 @@ void HelloWorld::loadFireAttack()
 {
 	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("fire.mp3");
 	char frameName[100] = { 0 };
-	for (int i = 1; i <= 18; i++) {
+	for (int i = 1; i <= 12; i++) {
 		sprintf(frameName, "fire%02d.png", i);
 		SpriteFrame* pngNameSF = SpriteFrame::create(frameName, Rect(0, 0, 300, 300));
 		fireAnimation.pushBack(pngNameSF);
@@ -810,7 +846,7 @@ void HelloWorld::loadDargonAttack()
 {
 	CocosDenshion::SimpleAudioEngine::getInstance()->preloadEffect("dargon.wav");
 	char frameName[100] = { 0 };
-	for (int i = 1; i <= 19; i++) {
+	for (int i = 1; i <= 12; i++) {
 		sprintf(frameName, "dargon%02d.png", i);
 		SpriteFrame* pngNameSF = SpriteFrame::create(frameName, Rect(0, 0, 300, 300));
 		dargonAnimation.pushBack(pngNameSF);

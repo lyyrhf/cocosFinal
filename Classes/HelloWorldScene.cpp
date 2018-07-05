@@ -220,9 +220,9 @@ bool HelloWorld::init()
 	time->setPosition(origin.x + visibleSize.width / 2, origin.y + visibleSize.height -50);
 	addChild(time);
 
-	score = Label::createWithTTF("0", "fonts/arial.ttf", 36);
-	score->setPosition(origin.x + visibleSize.width / 2, origin.y + visibleSize.height - 100);
-	addChild(score);
+	gameText = Label::createWithTTF("0", "fonts/arial.ttf", 36);
+	gameText->setPosition(origin.x + visibleSize.width / 2, origin.y + visibleSize.height - 100);
+	addChild(gameText);
 
 	addKeyboardListener();
 	schedule(schedule_selector(HelloWorld::updateMove), 0.04f);
@@ -340,11 +340,40 @@ void HelloWorld::beingAttacked(Sprite* attacker,Sprite* beingAttacker) {
 	}
 	if (beingAttacker == player2) {
 		reducePlayer2Blood();
+		if (player2BloodStack.empty()) {
+			CCLOG("LetitDie");
+			playDead(player2);
+			gameText->setString("Player2Dead!!!!");
+			unschedule(schedule_selector(HelloWorld::update));
+
+
+			auto label2 = Label::createWithTTF("RESTART", "fonts/STXINWEI.TTF", 40);
+			label2->setColor(Color3B(0, 0, 0));
+			auto replayBtn = MenuItemLabel::create(label2, CC_CALLBACK_1(HelloWorld::replayCallback, this));
+			Menu* replay = Menu::create(replayBtn, NULL);
+			replay->setPosition(visibleSize.width / 2 , visibleSize.height / 2 );
+			this->addChild(replay,4);
+		}
 	}
 	if (beingAttacker == player1) {
 		reducePlayer1Blood();
+		if (player1BloodStack.empty()) {
+			playDead(player1);
+			gameText->setString("Player1Dead!!!!");
+			unschedule(schedule_selector(HelloWorld::update));
+
+			auto label2 = Label::createWithTTF("RESTART", "fonts/STXINWEI.TTF", 40);
+			label2->setColor(Color3B(0, 0, 0));
+			auto replayBtn = MenuItemLabel::create(label2, CC_CALLBACK_1(HelloWorld::replayCallback, this));
+			Menu* replay = Menu::create(replayBtn, NULL);
+			replay->setPosition(visibleSize.width / 2 , visibleSize.height / 2 );
+			this->addChild(replay,4);
+		}
 	}
-	//此处还要扣血模块！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！！
+	
+}
+void HelloWorld::replayCallback(Ref * pSender) {
+	Director::getInstance()->replaceScene(HelloWorld::createScene());
 }
 void HelloWorld::attack2() {//player2的攻击
 	if (isMove2 == false && isAttack2 == false) {
@@ -785,7 +814,7 @@ void HelloWorld::playWindAttack(cocos2d::Sprite* player) {
 	auto callBackRemove = CallFunc::create([this, &skill]() {
 		this->removeChild(skill);
 	});
-	auto wind = Animation::createWithSpriteFrames(windAnimation, 0.1f);
+	auto wind = Animation::createWithSpriteFrames(windAnimation, 0.04f);
 	auto action = Animate::create(wind);
 	auto sequence = Sequence::create(
 		action,
@@ -828,7 +857,7 @@ void HelloWorld::playFireAttack(cocos2d::Sprite* player) {
 	auto callBackRemove = CallFunc::create([this, &skill]() {
 		this->removeChild(skill);
 	});
-	auto fire = Animation::createWithSpriteFrames(fireAnimation, 0.1f);
+	auto fire = Animation::createWithSpriteFrames(fireAnimation, 0.04f);
 	auto action = Animate::create(fire);
 	auto sequence = Sequence::create(
 		action,
@@ -862,7 +891,7 @@ void HelloWorld::playDargonAttack(cocos2d::Sprite* player) {
 	auto callBackRemove = CallFunc::create([this, &skill]() {
 		this->removeChild(skill);
 	});
-	auto dargon = Animation::createWithSpriteFrames(dargonAnimation, 0.1f);
+	auto dargon = Animation::createWithSpriteFrames(dargonAnimation, 0.04f);
 	auto action = Animate::create(dargon);
 	auto sequence = Sequence::create(
 		action,

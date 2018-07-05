@@ -36,7 +36,7 @@ private:
 
 	//下面是新加的变量
 	//用来显示打倒的敌人数
-	cocos2d::Label* score;
+	cocos2d::Label* gameText;
 	//判断是否在攻击
 	//bool isAttack = false;
 	//判断是否在死亡
@@ -116,4 +116,5 @@ private:
 	Sprite* item=NULL;
 	void itemGenerate(float time);
 	int kindOfItem;
+	void replayCallback(Ref * pSender);
 };

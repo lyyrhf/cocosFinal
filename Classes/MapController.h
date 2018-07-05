@@ -15,7 +15,7 @@ public:
 
 
 	void setColor(Vec2 inputPosition, Color3B inputColor) {//这个函数改变指定位置格子的颜色
-		CCLOG("%f  ######%f", inputPosition.x, inputPosition.y);
+		//CCLOG("%f  ######%f", inputPosition.x, inputPosition.y);
 		auto tile1 = backGroundLayer->getTileAt(Point(inputPosition.x, inputPosition.y));//获取指定格子
 		tile1->setColor(inputColor);//改变颜色
 	}
@@ -40,7 +40,7 @@ public:
 	Vec2 tileCoordForPosition(const Vec2& position)
 	{
 		int x = (position.x) / tileSize.width;// *12 / 11 - 4;
-		CCLOG("position.x = %f,tileSize.width = %f", position.x, tileSize.width);
+		//CCLOG("position.x = %f,tileSize.width = %f", position.x, tileSize.width);
 		int y = (mapSize.height*tileSize.width - position.y) / tileSize.width;// *8 / 7 + 2;
 		return Vec2(x, y);
 	}
@@ -52,7 +52,7 @@ public:
 	}
 	bool isValid(Vec2 position) {//这个函数判断一个格子是否在战斗区域内
 		if (position.x < 2.9 || position.y < 5.9 || position.x>14 || position.y>11) {
-			CCLOG("Refused%f %f", position.x, position.y);
+			//CCLOG("Refused%f %f", position.x, position.y);
 			return false;
 		}
 		return true;

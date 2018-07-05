@@ -122,6 +122,8 @@ bool HelloWorld::init()
 	player2Blood = 3;
 
 	kindOfItem = 1;
+	attackWay1 = 1;
+	attackWay2 = 1;
 
 	for (int i = 1; i <= player1Blood; i++) {
 		auto blood = Sprite::create("blood.png");
@@ -239,6 +241,7 @@ void HelloWorld::itemGenerate(float time){
 	if (item != NULL) {
 		return;
 	}
+	CCLOG("Generated2");
 	theMap = Playground::getInstance();
 	if (kindOfItem%3 == 1) {
 		item = Sprite::create("dargonPic.png");
@@ -279,22 +282,19 @@ void HelloWorld::attack1() {//player1的攻击
 	if (isMove1 == false && isAttack1 == false) {
 		theMap = Playground::getInstance();
 		isAttack1 = true;
-		
-		//reducePlayer1Blood();
-		playWindAttack(player1);
-		//playFireAttack(player1);
-		//playDargonAttack(player1);
-		//playDead(player1);
+
 		currentColor3B = Color3B(139,0,0);// theMap->getColor(currentPosition);//更新脚底下的Color!!!!!!!!!!!!!!!!!!!!!!!!!!!
-		attackWay1 = 3;
 
 		if (attackWay1 == 1) {
+			playWindAttack(player1);
 			beingAttackedB=theMap->setColor(player2->getPosition(),skill1(theMap->tileCoordForPosition(player1->getPosition())), playerAColor3B);
 		}
 		else if (attackWay1 == 2) {
+			playDargonAttack(player1);
 			beingAttackedB = theMap->setColor(player2->getPosition(),skill2(theMap->tileCoordForPosition(player1->getPosition())), playerAColor3B);
 		}
 		else if (attackWay1 == 3) {
+			playFireAttack(player1);
 			beingAttackedB = theMap->setColor(player2->getPosition(),skill3(theMap->tileCoordForPosition(player1->getPosition())), playerAColor3B);
 		}
 		//此处要触发后退、损血
@@ -351,16 +351,17 @@ void HelloWorld::attack2() {//player2的攻击
 		isAttack2 = true;
 		theMap = Playground::getInstance();
 		//reducePlayer2Blood();
-		playDargonAttack(player2);
-		attackWay2 = 1;
 		//theMap->setColor(skill1(theMap->tileCoordForPosition(player->getPosition())),Color3B(139,0,0));
 		if (attackWay2 == 1) {
+			playWindAttack(player2);
 			beingAttackedA=theMap->setColor(player1->getPosition(),skill1(theMap->tileCoordForPosition(player2->getPosition())), playerBColor3B);
 		}
 		else if (attackWay2 == 2) {
+			playDargonAttack(player2);
 			beingAttackedA = theMap->setColor(player1->getPosition(),skill2(theMap->tileCoordForPosition(player2->getPosition())), playerBColor3B);
 		}
 		else if (attackWay2 == 3) {
+			playFireAttack(player2);
 			beingAttackedA = theMap->setColor(player1->getPosition(),skill3(theMap->tileCoordForPosition(player2->getPosition())), playerBColor3B);
 		}
 		if (beingAttackedA)beingAttacked(player2, player1);
@@ -760,14 +761,14 @@ void HelloWorld::playWindAttack(cocos2d::Sprite* player) {
 	})), nullptr);
 	addChild(skill);
 	skill->runAction(sequence);
-	auto jumpBy1 = JumpBy::create(0.7f, Point(0, 50), 50, 1);
+	/*auto jumpBy1 = JumpBy::create(0.7f, Point(0, 50), 50, 1);
 	auto jumpBy2 = JumpBy::create(0.3f, Point(0, -50), -50, 1);
 	auto sequence1 = Sequence::create(
 		jumpBy1,
 		jumpBy2,
 		nullptr
 	);
-	player1->runAction(sequence1);
+	player1->runAction(sequence1);*/
 }
 
 void HelloWorld::loadFireAttack()
@@ -902,12 +903,43 @@ bool HelloWorld::onConcactBegin(PhysicsContact & contact) {
 		s1->getPhysicsBody()->setVelocity(Vec2(0, 0));
 		s2->getPhysicsBody()->setVelocity(Vec2(0, 0));
 	}
-	if (c1->getTag() == Tag::PLAYER1 && c2->getTag() == Tag::SKILL1 || c2->getTag() == Tag::SKILL2 || c2->getTag() == Tag::SKILL3) {
+	if (c1->getTag() == Tag::PLAYER1 && c2->getTag() == Tag::SKILL1) {
 		s2->removeFromParentAndCleanup(true);
-		s2->release();
-		if (s2 != NULL) {
-			CCLOG("s2 != NULL");
-		}
+		attackWay1 = 1;
+		item = NULL;
+	}
+	else if (c1->getTag() == Tag::PLAYER1 && c2->getTag() == Tag::SKILL1) {
+		s2->removeFromParentAndCleanup(true);
+		attackWay1 = 1;
+		item = NULL;
+	}
+	else if (c1->getTag() == Tag::PLAYER1 && c2->getTag() == Tag::SKILL2) {
+		s2->removeFromParentAndCleanup(true);
+		attackWay1 = 2;
+		item = NULL;
+	}
+	else if (c1->getTag() == Tag::PLAYER1 && c2->getTag() == Tag::SKILL3) {
+		s2->removeFromParentAndCleanup(true);
+		attackWay1 = 3;
+		item = NULL;
+	}
+	else if (c1->getTag() == Tag::PLAYER2 && c2->getTag() == Tag::SKILL1) {
+		s2->removeFromParentAndCleanup(true);
+		attackWay2 = 1;
+		item = NULL;
+	}
+	else if (c1->getTag() == Tag::PLAYER2 && c2->getTag() == Tag::SKILL2) {
+		s2->removeFromParentAndCleanup(true);
+		attackWay2 = 2;
+		item = NULL;
+	}
+	else if (c1->getTag() == Tag::PLAYER2 && c2->getTag() == Tag::SKILL3) {
+		s2->removeFromParentAndCleanup(true);
+		attackWay2 = 3;
+		item = NULL;
+	}
+	if (item != NULL) {
+		CCLOG("item != NULL");
 	}
 	return true;
 }

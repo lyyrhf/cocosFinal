@@ -750,7 +750,7 @@ std::vector<Vec2> HelloWorld::skill3(Vec2 input)
 	skillArea.push_back(Direction1);
 	skillArea.push_back(Direction2);
 	skillArea.push_back(Direction3);
-	skillArea.push_back(Direction4);
+	//skillArea.push_back(Direction4);
 	skillArea.push_back(input);
 	return skillArea;
 }
@@ -788,7 +788,7 @@ std::vector<Vec2> HelloWorld::skill4(Vec2 input)
 	skillArea.push_back(Direction1);
 	skillArea.push_back(Direction2);
 	skillArea.push_back(Direction3);
-	skillArea.push_back(Direction4);
+	//skillArea.push_back(Direction4);
 	skillArea.push_back(input);
 	return skillArea;
 }

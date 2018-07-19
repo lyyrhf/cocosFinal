@@ -2,8 +2,8 @@
 #include "MapController.h"
 #include "SimpleAudioEngine.h"
 using namespace cocos2d;
-
-class HelloWorld : public cocos2d::Scene
+USING_NS_CC;
+class HelloWorld : public Layer
 {
 public:
 	static PhysicsWorld* world;
@@ -34,15 +34,7 @@ private:
 
 	void update(float time)override;
 
-	//下面是新加的变量
-	//用来显示打倒的敌人数
 	cocos2d::Label* gameText;
-	//判断是否在攻击
-	//bool isAttack = false;
-	//判断是否在死亡
-	//bool isDead = false;
-	//停止所有动作
-	//void stop(float time);
 
 
 	void addKeyboardListener();

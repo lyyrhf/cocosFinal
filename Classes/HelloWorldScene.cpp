@@ -25,7 +25,6 @@ Scene* HelloWorld::createScene()
 	layer->setPhysicsWorld(scene->getPhysicsWorld());
 	scene->addChild(layer);
 	return scene;
-    //return HelloWorld::create();
 }
 
 // Print useful error message instead of segfaulting when files are not there.
@@ -40,7 +39,7 @@ bool HelloWorld::init()
 {
     //////////////////////////////
     // 1. super init first
-    if ( !Scene::init() )
+    if ( !Layer::init() )
     {
         return false;
     }
@@ -334,7 +333,7 @@ void HelloWorld::beingAttacked(Sprite* attacker,Sprite* beingAttacker) {
 			unschedule(schedule_selector(HelloWorld::update));
 
 
-			auto label2 = Label::createWithTTF("RESTART", "fonts/STXINWEI.TTF", 40);
+			auto label2 = Label::createWithTTF("OutGame", "fonts/STXINWEI.TTF", 40);
 			label2->setColor(Color3B(0, 0, 0));
 			auto replayBtn = MenuItemLabel::create(label2, CC_CALLBACK_1(HelloWorld::replayCallback, this));
 			Menu* replay = Menu::create(replayBtn, NULL);
@@ -360,7 +359,13 @@ void HelloWorld::beingAttacked(Sprite* attacker,Sprite* beingAttacker) {
 	
 }
 void HelloWorld::replayCallback(Ref * pSender) {
-	Director::getInstance()->replaceScene(HelloWorld::createScene());
+	Director::getInstance()->end();
+#if (CC_TARGET_PLATFORM == CC_PLATFORM_IOS)
+	exit(0);
+#endif
+	//Director::getInstance()->replaceScene(HelloWorld::createScene());
+	//Director::getInstance()->pushScene(HelloWorld::createScene());
+	//Director::getInstance()->restart();
 }
 void HelloWorld::attack2() {//player2的攻击
 	if (isMove2 == false && isAttack2 == false) {
@@ -826,14 +831,6 @@ void HelloWorld::playWindAttack(cocos2d::Sprite* player) {
 	})), nullptr);
 	addChild(skill);
 	skill->runAction(sequence);
-	/*auto jumpBy1 = JumpBy::create(0.7f, Point(0, 50), 50, 1);
-	auto jumpBy2 = JumpBy::create(0.3f, Point(0, -50), -50, 1);
-	auto sequence1 = Sequence::create(
-		jumpBy1,
-		jumpBy2,
-		nullptr
-	);
-	player1->runAction(sequence1);*/
 }
 
 void HelloWorld::loadFireAttack()
